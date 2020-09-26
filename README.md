@@ -21,6 +21,7 @@ Features
 - Do your cooking in brand new text console UI cooking screens [`video preview`](https://youtu.be/pYr_74r5_V4)
   - Brand new UI for *Choose ingredients to cook with*
   - Brand new UI for *Cook from a recipe*
+- Collapse sections in the text console UI trade screen [`PNG preview`](https://i.imgur.com/MPz3nHH.png)
 - See ability descriptions and willpower-adjusted cooldown details for **all** activated abilities on the abilities screen [`GIF preview`](https://i.imgur.com/qdwLXIU.gif)
 - Disable auto-pickup for specific items through item interaction menu, such as ape pelts or HE Missiles [`PNG preview`](https://i.imgur.com/eo9ZwF2.png)
 - Get particle text indicators when you're blocked at a zone border or when you've paused before entering deep/dangerous liquids [`GIF preview`](https://i.imgur.com/7jHm9N7.gif)
