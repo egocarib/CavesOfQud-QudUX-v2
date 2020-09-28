@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using QudUX.Concepts;
+using GameOptions = XRL.UI.Options;
+using QudUXOptions = QudUX.Concepts.Options;
 
 namespace QudUX.HarmonyPatches
 {
@@ -10,7 +12,7 @@ namespace QudUX.HarmonyPatches
         [HarmonyPatch("Show")]
         static bool Prefix(XRL.World.GameObject GO, ref XRL.UI.ScreenReturn __result)
         {
-            if (Options.UI.UseQudUXInventory)
+            if (QudUXOptions.UI.UseQudUXInventory && !GameOptions.OverlayPrereleaseInventory)
             {
                 __result = (new XRL.UI.QudUX_InventoryScreen()).Show(GO);
                 return false;
