@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<options>
+
+  <option ID="QudUX_OptionTrackLocations" DisplayText="Track visited locations in journal" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionAskToFindQuestGivers" DisplayText="Add conversation option to help locate village quest givers" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionAskAboutRestock" DisplayText="Allow asking merchants when they will restock" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionAutogetExclusions" DisplayText="Use item interaction menu to disable auto-pickup for specific items" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionUseInventoryMenu" DisplayText="Use revamped inventory text UI" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionShowInventoryTiles" DisplayText=" In revamped inventory, show item sprites" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionValPerLbInInventory" DisplayText=" In revamped inventory, press {{W|.}} or {{W|0}} to show value per pound" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionUseCookMenus" DisplayText="Use revamped cooking menus (requires restart)" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionUseBuildLibrary" DisplayText="Use revamped build library text UI (requires restart)" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionCollapseInTradeMenu" DisplayText="Enable collapsible categories on the trade screen text UI" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionCustomSpriteMenu" DisplayText="Modify your sprite from character creation text UI (requires restart)" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionTileConversationUI" DisplayText="Show sprites in conversation screen text UI" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionAbilityDescriptions" DisplayText="Add descriptions and cooldown info to activated ability screen" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionParticleText" DisplayText="Show animated text to indicate when movement was prevented" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionRenameRuins" DisplayText="Force all ruins to have unique names (requires restart and new game)" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionReplaceArrowSprite" DisplayText="Use alternate sprite for arrows" Category="QudUX" Type="Checkbox" Default="Yes"></option>
+  <option ID="QudUX_OptionDisableMagnets" DisplayText="Prevent pulsed field magnets from pulling away inventory items" Category="QudUX" Type="Checkbox" Default="No"></option>
+
+</options>

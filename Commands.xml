@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<commands>
+  <command ID="QudUX_OpenSpriteMenu" DisplayText="Modify Character Sprite" Category="QudUX"></command>
+  <command ID="QudUX_OpenAutogetMenu" DisplayText="Open Autoget Settings" Category="QudUX"></command>
+</commands>

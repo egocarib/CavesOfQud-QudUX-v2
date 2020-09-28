@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objects>
+
+  <!-- Alternate arrow sprites -->
+  <object Name="Wooden Arrow" Load="Merge">
+    <part Name="QudUX_ArrowSpriteExchanger" ReplacementColorString="&amp;y" ReplacementDetailColor="w" ReplacementTile="QudUX/arrow.png" />
+  </object>
+  <object Name="Steel Arrow" Load="Merge">
+    <part Name="QudUX_ArrowSpriteExchanger" ReplacementColorString="&amp;Y" ReplacementDetailColor="w" ReplacementTile="QudUX/arrow.png" />
+  </object>
+  <object Name="Boomrose Arrow" Load="Merge">
+    <part Name="QudUX_ArrowSpriteExchanger" ReplacementColorString="&amp;R" ReplacementDetailColor="w" ReplacementTile="QudUX/arrow.png" />
+  </object>
+  
+  <!-- Sultan statues mockups - used only to dynamically populate these tiles into the character sprite selector -->
+  <object Name="MockSultanStatue" Inherits="Statue">
+    <part Name="Render" DisplayName="shrine" ColorString="&amp;y" DetailColor="g" />
+    <part Name="RandomTile" Tiles="terrain/sw_sultanstatue_1.bmp,terrain/sw_sultanstatue_2.bmp,terrain/sw_sultanstatue_3.bmp,terrain/sw_sultanstatue_4.bmp,terrain/sw_sultanstatue_5.bmp,terrain/sw_sultanstatue_6.bmp,terrain/sw_sultanstatue_7.bmp,terrain/sw_sultanstatue_8.bmp" />
+    <tag Name="ExcludeFromDynamicEncounters" />
+  </object>
+  <object Name="MockSultanStatueRed" Inherits="MockSultanStatue">
+    <part Name="Render" DisplayName="shrine" ColorString="&amp;y" DetailColor="r" />
+  </object>
+  <object Name="MockSultanStatueCyan" Inherits="MockSultanStatue">
+    <part Name="Render" DisplayName="shrine" ColorString="&amp;y" DetailColor="c" />
+  </object>
+  <object Name="MockSultanStatueBrown" Inherits="MockSultanStatue">
+    <part Name="Render" DisplayName="shrine" ColorString="&amp;y" DetailColor="w" />
+  </object>
+  <object Name="MockSultanStatueWhite" Inherits="MockSultanStatue">
+    <part Name="Render" DisplayName="shrine" ColorString="&amp;y" DetailColor="Y" />
+  </object>
+  <object Name="MockSultanStatueRare" Inherits="Statue">
+    <part Name="Render" DisplayName="shrine (rare)" ColorString="&amp;y" DetailColor="g" />
+    <part Name="RandomTile" Tiles="terrain/sw_sultanstatue_rare_1.bmp,terrain/sw_sultanstatue_rare_2.bmp,terrain/sw_sultanstatue_rare_3.bmp,terrain/sw_sultanstatue_rare_4.bmp,terrain/sw_sultanstatue_rare_5.bmp,terrain/sw_sultanstatue_rare_6.bmp,terrain/sw_sultanstatue_rare_7.bmp,terrain/sw_sultanstatue_rare_8.bmp" />
+    <tag Name="ExcludeFromDynamicEncounters" />
+  </object>
+  <object Name="MockSultanStatueRareRed" Inherits="MockSultanStatueRare">
+    <part Name="Render" DisplayName="shrine (rare)" ColorString="&amp;y" DetailColor="r" />
+  </object>
+  <object Name="MockSultanStatueRareCyan" Inherits="MockSultanStatueRare">
+    <part Name="Render" DisplayName="shrine (rare)" ColorString="&amp;y" DetailColor="c" />
+  </object>
+  <object Name="MockSultanStatueRareBrown" Inherits="MockSultanStatueRare">
+    <part Name="Render" DisplayName="shrine (rare)" ColorString="&amp;y" DetailColor="w" />
+  </object>
+  <object Name="MockSultanStatueRareWhite" Inherits="MockSultanStatueRare">
+    <part Name="Render" DisplayName="shrine (rare)" ColorString="&amp;y" DetailColor="Y" />
+  </object>
+
+</objects>

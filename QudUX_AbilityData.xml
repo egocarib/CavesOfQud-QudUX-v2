@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<abilityEntries>
+  <category Name="Cybernetics">
+    <abilityEntry Name="Emergency Recomposite" Class="Cybernetics" Command="" BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Inflate Axons" Class="Cybernetics" Command="" BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Night Vision" Class="Cybernetics" Command="CommandToggleCyberNightVision" CustomDescription="You see in the dark."></abilityEntry>
+    <abilityEntry Name="Toggle Night Vision" Class="Cybernetics" Command="CommandToggleNightVision" CustomDescription="You see in the dark."></abilityEntry>
+    <abilityEntry Name="Recomposite" Class="Cybernetics" Command="" BaseCooldown="50"></abilityEntry>
+    <abilityEntry Name="Anomaly Fumigator" Class="Cybernetics" Command="CommandToggleAnomalyFumigator" CustomDescription="You emit clouds of normality gas every turn."></abilityEntry>
+    <abilityEntry Name="Phase Harmonic Modulator" Class="Cybernetics" Command="CommandTogglePhaseHarmonicModulator" CustomDescription="You can interact with both in-phase and out-of-phase objects and creatures."></abilityEntry>
+    <abilityEntry Name="Penetrating Radar" Class="Cybernetics" Command="CommandTogglePenetratingRadar" CustomDescription="Gain total visibility in a radius of 10 spaces around you, blocked only by force fields and spacetime anomalies."></abilityEntry>
+    <abilityEntry Name="Imprint with current location" Class="Cybernetics" Command="CommandActivateOnboardRecoilerImprinting" BaseCooldown="100" CustomDescription="Imprint your onboard recoiler implant with the current location."></abilityEntry>
+    <abilityEntry Name="Recoil" Class="Cybernetics" Command="CommandActivateOnboardRecoilerTeleporter" BaseCooldown="50" CustomDescription="Recoil to the location you last imprinted with your onboard recoiler implant."></abilityEntry>
+    <abilityEntry Name="Fire Suppression" Class="Cybernetics" Command="CommandToggleFireSuppressionSystem" CustomDescription="Automatically discharges flame-retardant gel every turn you're on fire."></abilityEntry>
+    <abilityEntry Name="Medassist Module" Class="Cybernetics" Command="CommandToggleMedassistModule" CustomDescription="Toggle whether your medassist module implant AI automatically applies loaded injectors."></abilityEntry>
+    <abilityEntry Name="Anchor Spikes" Class="Cybernetics" Command="CommandToggleAnchorSpikes" CustomDescription="You cannot be forced to move by physical means."></abilityEntry>
+  </category>
+
+  <category Name="Items">
+    <abilityEntry Name="Activate Flume-Flier" Class="Items" Command="ActivateSkyshroud" CustomDescription="Enter a dashing state. While dashing, whenever you move in a direction, you dash toward the nearest enemy or obstacle and perform an attack. For every three spaces you dash, you gain a +2 bonus to hit and a +2 penetration bonus to attacks you make. If you do not encounter an enemy or obstacle after twenty squares, you stop dashing." BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Activate ganglionic teleprojector" Class="Items" Command="ActivateTeleprojector" CustomDescription="Interface with a robot." BaseCooldown="200"></abilityEntry>
+    <abilityEntry Name="Activate Stopsvalinn" Class="Items" Command="ActivateStopsvalinn" CustomDescription="Conjure a force field in front of you. Robots will often be unable to advance toward you while the force field is active."></abilityEntry>
+    <abilityEntry Name="Blow Aji Conch" Class="Items" Command="this.PID"></abilityEntry>
+    <abilityEntry Name="Puff Spores" Class="Items" Command="ActivatePaxInfection" BaseCooldown="50"></abilityEntry>
+  </category>
+
+  <category Name="Maneuvers">
+    <abilityEntry Name="Power Skate" Class="Maneuvers" Command="CommandMeleeRun"></abilityEntry>
+    <abilityEntry Name="Sprint" Class="Maneuvers" Command="CommandMeleeRun" CustomDescription="Move twice as quickly for a short duration." BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Stop Power Skating" Class="Maneuvers" Command="CommandStopRunning"></abilityEntry>
+    <abilityEntry Name="Stop Sprinting" Class="Maneuvers" Command="CommandStopRunning" CustomDescription="Move twice as quickly for a short duration." BaseCooldown="100"></abilityEntry>
+  </category>
+
+  <category Name="Mental Mutation">
+    <abilityEntry Name="Ambient Light" Class="Mental Mutation" Command="CommandAmbientLight" MutationName="Light Manipulation"></abilityEntry>
+    <abilityEntry Name="Beguile Creature" Class="Mental Mutation" Command="CommandBeguileCreature" MutationName="Beguiling"></abilityEntry>
+    <abilityEntry Name="Boost Agility" Class="Mental Mutation" Command="CommandWillForceAgility" MutationName="Ego Projection"></abilityEntry>
+    <abilityEntry Name="Boost Strength" Class="Mental Mutation" Command="CommandWillForceStrength" MutationName="Ego Projection"></abilityEntry>
+    <abilityEntry Name="Boost Toughness" Class="Mental Mutation" Command="CommandWillForceToughness" MutationName="Ego Projection"></abilityEntry>
+    <abilityEntry Name="Burgeoning" Class="Mental Mutation" Command="CommandBurgeoning" MutationName="Burgeoning"></abilityEntry>
+    <abilityEntry Name="Chill" Class="Mental Mutation" Command="CommandCryokinesis" MutationName="Cryokinesis"></abilityEntry>
+    <abilityEntry Name="Clairvoyance" Class="Mental Mutation" Command="CommandClairvoyance" MutationName="Clairvoyance"></abilityEntry>
+    <abilityEntry Name="Confusion" Class="Mental Mutation" Command="CommandConfuse" MutationName="Confusion"></abilityEntry>
+    <abilityEntry Name="Disintegration" Class="Mental Mutation" Command="CommandDisintegration" MutationName="Disintegration"></abilityEntry>
+    <abilityEntry Name="Dominate Creature" Class="Mental Mutation" Command="CommandDominateCreature" MutationName="Domination"></abilityEntry>
+    <abilityEntry Name="End Domination" Class="Mental Mutation" Command="CommandEndDomiation" MutationName="Domination"></abilityEntry>
+<!--    <abilityEntry Name="Farport" Class="Mental Mutation" Command="CommandFarport" MutationName="Farport"></abilityEntry>                                  -->
+<!--    <abilityEntry Name="Fear" Class="Mental Mutation" Command="CommandFear" MutationName="Fear"></abilityEntry>                                           -->
+    <abilityEntry Name="Force Bubble" Class="Mental Mutation" Command="CommandForceBubble" MutationName="Force Bubble"></abilityEntry>
+    <abilityEntry Name="Force Wall" Class="Mental Mutation" Command="CommandForceWall" MutationName="Force Wall"></abilityEntry>
+    <abilityEntry Name="Kindle" Class="Mental Mutation" Command="CommandKindle" MutationName="Kindle"></abilityEntry>
+<!--    <abilityEntry Name="Knit Frosty Webs" Class="Mental Mutation" Command="CommandFrostWebs" MutationName="Knit Frosty Webs"></abilityEntry>              -->
+    <abilityEntry Name="Lase" Class="Mental Mutation" Command="CommandLase" MutationName="Light Manipulation"></abilityEntry>
+    <abilityEntry Name="Life Drain" Class="Mental Mutation" Command="CommandLifeDrain" MutationName="Syphon Vim"></abilityEntry>
+    <abilityEntry Name="Mental Mirror" Class="Mental Mutation" Command="CommandMentalMirror" MutationName="Mental Mirror"></abilityEntry>
+    <abilityEntry Name="Precognition - End vision" Class="Mental Mutation" Command="CommandPrecognitionRevert" MutationName="Precognition"></abilityEntry>
+    <abilityEntry Name="Precognition - Start vision" Class="Mental Mutation" Command="CommandPrecognition" MutationName="Precognition"></abilityEntry>
+    <abilityEntry Name="Psychometry" Class="Mental Mutation" Command="CommandPsychometryMenu" MutationName="Psychometry"></abilityEntry>
+<!--    <abilityEntry Name="Serenity" Class="Mental Mutation" Command="CommandSerenity" MutationName="Serenity"></abilityEntry>                               -->
+    <abilityEntry Name="Space-Time Vortex" Class="Mental Mutation" Command="CommandSpaceTimeVortex" MutationName="Space-Time Vortex"></abilityEntry>
+    <abilityEntry Name="Stunning Force" Class="Mental Mutation" Command="CommandStunningForce" MutationName="Stunning Force"></abilityEntry>
+    <abilityEntry Name="Sunder Mind" Class="Mental Mutation" Command="CommandMentalBlast" MutationName="Sunder Mind" DeletePhrases=", leaving them reeling in pain"></abilityEntry>
+    <abilityEntry Name="Tap the Mass Mind" Class="Mental Mutation" Command="CommandMassMind" MutationName="Mass Mind" NoCooldownReduction="true"></abilityEntry>
+    <abilityEntry Name="Telepathy" Class="Mental Mutation" Command="CommandTelepathy" MutationName="Telepathy"></abilityEntry>
+    <abilityEntry Name="Teleport Other" Class="Mental Mutation" Command="CommandTeleportOther" MutationName="Teleport Other"></abilityEntry>
+    <abilityEntry Name="Teleport" Class="Mental Mutation" Command="CommandTeleport" MutationName="Teleportation"></abilityEntry>
+    <abilityEntry Name="Temporal Fugue" Class="Mental Mutation" Command="CommandTemporalFugue" MutationName="Temporal Fugue"></abilityEntry>
+    <abilityEntry Name="Time Dilation" Class="Mental Mutation" Command="CommandTimeDilation" MutationName="Time Dilation" DeletePhrases=" around your person in order"></abilityEntry>
+    <abilityEntry Name="Toast" Class="Mental Mutation" Command="CommandPyrokinesis" MutationName="Pyrokinesis"></abilityEntry>
+  </category>
+
+  <category Name="Mutation">
+    <abilityEntry Name="Arc Lightning" Class="Mutation" Command="CommandArcLightning" MutationName="Electrified Carapace"></abilityEntry>
+    <abilityEntry Name="Discharge" Class="Mutation" Command="CommandDischarge" MutationName="Electrified Carapace"></abilityEntry>
+    <abilityEntry Name="Electrical Shield" Class="Mutation" Command="CommandElectricalShield" MutationName="Electrified Carapace"></abilityEntry>
+    <abilityEntry Name="Electromagnetc Pulse" Class="Mutation" Command="CommandElectromagneticPulse" MutationName="Electrified Carapace"></abilityEntry>
+    <abilityEntry Name="Fire Bolt" Class="Mutation" Command="CommandFireBolt" MutationName="OldPyrokinesis"></abilityEntry>
+    <abilityEntry Name="Fire Burst" Class="Mutation" Command="CommandFireBurst" MutationName="OldPyrokinesis"></abilityEntry>
+    <abilityEntry Name="Fire Field" Class="Mutation" Command="CommandFireField" MutationName="OldPyrokinesis"></abilityEntry>
+    <abilityEntry Name="Flame Armor" Class="Mutation" Command="CommandFlameArmor" MutationName="OldPyrokinesis"></abilityEntry>
+    <abilityEntry Name="Flame Aura" Class="Mutation" Command="CommandFlameAura" MutationName="OldPyrokinesis"></abilityEntry>
+    <abilityEntry Name="Freeze" Class="Mutation" Command="CommandFreeze" MutationName="OldCryokinesis"></abilityEntry>
+    <abilityEntry Name="Frost Armor" Class="Mutation" Command="CommandFrostArmor" MutationName="OldCryokinesis"></abilityEntry>
+    <abilityEntry Name="Frost Aura" Class="Mutation" Command="CommandFrostAura" MutationName="OldCryokinesis"></abilityEntry>
+    <abilityEntry Name="Heat" Class="Mutation" Command="CommandHeat" MutationName="OldPyrokinesis"></abilityEntry>
+    <abilityEntry Name="Ice Bolt" Class="Mutation" Command="CommandIceBolt" MutationName="OldCryokinesis"></abilityEntry>
+    <abilityEntry Name="Ice Burst" Class="Mutation" Command="CommandIceBurst" MutationName="OldCryokinesis"></abilityEntry>
+    <abilityEntry Name="Ice Field" Class="Mutation" Command="CommandIceField" MutationName="OldCryokinesis"></abilityEntry>
+    <abilityEntry Name="Shock" Class="Mutation" Command="CommandShock" MutationName="Electrified Carapace"></abilityEntry>
+    <abilityEntry Name="Synapse Snap" Class="Mutation" Command="CommandSynapseSnap" MutationName="Electrified Carapace"></abilityEntry>
+  </category>
+
+  <category Name="Physical Mutation">
+    <abilityEntry Name="Release Adrenaline" Class="Physical Mutation" Command="CommandReleaseAdrenaline" MutationName="Adrenal Control"></abilityEntry>
+    <abilityEntry Name="Bask" Class="Physical Mutation" Command="CommandBask" MutationName="Photosynthetic Skin"></abilityEntry>
+    <abilityEntry Name="Belch Urchins" Class="Physical Mutation" Command="this.EventKey" MutationName="Urchin Belching"></abilityEntry>
+    <abilityEntry Name="Breathe Confusion Gas" Class="Physical Mutation" Command="" MutationName="Confusing Breath"></abilityEntry>
+    <abilityEntry Name="Breathe Corrosive Gas" Class="Physical Mutation" Command="" MutationName="Corrosive Breath"></abilityEntry>
+    <abilityEntry Name="Breathe Fire" Class="Physical Mutation" Command="" MutationName="Fire Breath"></abilityEntry>
+    <abilityEntry Name="Breathe Ice" Class="Physical Mutation" Command="" MutationName="Ice Breath"></abilityEntry>
+    <abilityEntry Name="Breathe Normality Gas" Class="Physical Mutation" Command="" MutationName="Normality Breath"></abilityEntry>
+    <abilityEntry Name="Breathe Poison Gas" Class="Physical Mutation" Command="" MutationName="Poison Breath"></abilityEntry>
+    <abilityEntry Name="Breathe Sleep Gas" Class="Physical Mutation" Command="" MutationName="Sleep Breath"></abilityEntry>
+    <abilityEntry Name="Breathe Stun Gas" Class="Physical Mutation" Command="" MutationName="Stun Breath"></abilityEntry>
+    <abilityEntry Name="Burrow" Class="Physical Mutation" Command="CommandBurrow" MutationName="Burrowing"></abilityEntry>
+    <abilityEntry Name="Burrowing Claws" Class="Physical Mutation" Command="CommandToggleBurrowingClaws" MutationName="Burrowing Claws"></abilityEntry>
+    <abilityEntry Name="Cancel Adrenal Control" Class="Physical Mutation" Command="CommandCancelAdrenalControl" MutationName="Adrenal Control"></abilityEntry>
+    <abilityEntry Name="Decarbonize" Class="Physical Mutation" Command="CommandDecarbonizer" MutationName="Decarbonizer"></abilityEntry>
+    <abilityEntry Name="Discharge" Class="Physical Mutation" Command="CommandDischarge" MutationName="Electrical Generation" DeleteLines="You can drink charge~You can provide charge"></abilityEntry>
+    <abilityEntry Name="Emit Pulse" Class="Physical Mutation" Command="CommandElectromagneticPulse" MutationName="Electromagnetic Pulse"></abilityEntry>
+    <abilityEntry Name="End Metamorphosis" Class="Physical Mutation" Command="CommandEndMetamorphosis" MutationName="Metamorphosis"></abilityEntry>
+    <abilityEntry Name="Energy Generation" Class="Physical Mutation" Command="CommandEnergyGeneration" MutationName="Energy Generation"></abilityEntry>
+    <abilityEntry Name="Excavate down" Class="Physical Mutation" Command="CommandDigDown" MutationName="Burrowing Claws"></abilityEntry>
+    <abilityEntry Name="Excavate up" Class="Physical Mutation" Command="CommandDigUp" MutationName="Burrowing Claws"></abilityEntry>
+    <abilityEntry Name="FearAura" Class="Physical Mutation" Command="CommandFearAura" MutationName="Fear Aura"></abilityEntry>
+    <abilityEntry Name="Flaming Ray" Class="Physical Mutation" Command="CommandFlamingHands" MutationName="Flaming Ray"></abilityEntry>
+    <abilityEntry Name="Fly" Class="Physical Mutation" Command="CommandFly" MutationName="Wings"></abilityEntry>
+    <abilityEntry Name="Freeze Breath" Class="Physical Mutation" Command="CommandFreezeBreath" MutationName="Freeze Breath"></abilityEntry>
+    <abilityEntry Name="Freezing Ray" Class="Physical Mutation" Command="CommandFreezingHands" MutationName="Freezing Ray"></abilityEntry>
+    <abilityEntry Name="Release Corrosive Gas" Class="Physical Mutation" Command="GasGenerationCommandAcidGas" MutationName="Corrosive Gas Generation"></abilityEntry>
+    <abilityEntry Name="Release Sleep Gas" Class="Physical Mutation" Command="GasGenerationCommandSleepGas" MutationName="Sleep Gas Generation"></abilityEntry>
+    <abilityEntry Name="Grow" Class="Physical Mutation" Command="CommandDensityGrow" MutationName="Density Control"></abilityEntry>
+    <abilityEntry Name="Infiltrate" Class="Physical Mutation" Command="CommandInfiltrate" MutationName="Infiltrate"></abilityEntry>
+    <abilityEntry Name="Land" Class="Physical Mutation" Command="CommandLand" MutationName="Wings"></abilityEntry>
+    <abilityEntry Name="Lithifying Gaze" Class="Physical Mutation" Command="CommandStoneGaze" MutationName="Lithifying Gaze"></abilityEntry>
+    <abilityEntry Name="Magnetic Pulse" Class="Physical Mutation" Command="CommandMagneticPulse" MutationName="Magnetic Pulse"></abilityEntry>
+    <abilityEntry Name="Metamorphosis" Class="Physical Mutation" Command="CommandMetamorphosis" MutationName="Metamorphosis"></abilityEntry>
+    <abilityEntry Name="More Adrenaline" Class="Physical Mutation" Command="CommandIncrementControl" MutationName="Adrenal Control" BaseCooldown="50" DeleteLines="+5 quickness" DeletePhrases=" your body's~ release of~ you an extra"></abilityEntry>
+    <abilityEntry Name="Phase" Class="Physical Mutation" Command="CommandTogglePhase" MutationName="Phasing"></abilityEntry>
+    <abilityEntry Name="Power devices" Class="Physical Mutation" Command="CommandToggleProvideCharge" MutationName="Electrical Generation" DeleteLines="Can discharge~Discharge can arc"></abilityEntry>
+    <abilityEntry Name="Quill Fling" Class="Physical Mutation" Command="CommandQuillFling" MutationName="Quills"></abilityEntry>
+    <abilityEntry Name="Shrink" Class="Physical Mutation" Command="CommandDensityShrink" MutationName="Density Control"></abilityEntry>
+    <abilityEntry Name="Spew" Class="Physical Mutation" Command="CommandSlog" MutationName="Bilge Sphincter"></abilityEntry>
+    <abilityEntry Name="Spin Webs" Class="Physical Mutation" Command="CommandSpinWeb" MutationName="Spinnerets" DeleteLines="+~Immune"></abilityEntry>
+    <abilityEntry Name="Spit Acid" Class="Physical Mutation" Command="CommandSpitAcid" MutationName="Acid Slime Glands"></abilityEntry>
+    <abilityEntry Name="Spit Slime" Class="Physical Mutation" Command="CommandSpitSlime" MutationName="Slime Glands" BaseCooldown="40"></abilityEntry>
+    <abilityEntry Name="Sting" Class="Physical Mutation" Command="CommandSting" MutationName="Stinger (Confusing Venom)" DeleteLines="20% chance on melee attack~Stinger applies venom on damage."></abilityEntry>
+    <abilityEntry Name="Sting" Class="Physical Mutation" Command="CommandSting" MutationName="Stinger (Paralyzing Venom)" DeleteLines="20% chance on melee attack~Stinger applies venom on damage."></abilityEntry>
+    <abilityEntry Name="Sting" Class="Physical Mutation" Command="CommandSting" MutationName="Stinger (Poisoning Venom)" DeleteLines="20% chance on melee attack~Stinger applies venom on damage."></abilityEntry>
+    <abilityEntry Name="Tighten Carapace" Class="Physical Mutation" Command="CommandTightenCarapace" MutationName="Carapace"></abilityEntry>
+    <abilityEntry Name="Tongue" Class="Physical Mutation" Command="CommandStickyTongue" MutationName="Sticky Tongue"></abilityEntry>
+    <abilityEntry Name="Waveform Dash" Class="Physical Mutation" Command="CommandWaveformWorm" MutationName="Waveform"></abilityEntry>
+    <abilityEntry Name="Wrecking Charge" Class="Physical Mutation" Command="CommandMassiveCharge" MutationName="Multiple Horns"></abilityEntry>
+  </category>
+
+  <category Name="Stances">
+    <abilityEntry Name="Berserk!" Class="Skill" Command="CommandAxeBeserk" SkillName="Axe_Beserk" BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Demolish" Class="Skill" Command="CommandSmashUp" SkillName="Cudgel_SmashUp" BaseCooldown="100"></abilityEntry>
+  </category>
+
+  <category Name="Long Blades">
+    <abilityEntry Name="En Garde!" Class="Skill" Command="CommandDeathblow" SkillName="LongBlades2Deathblow" BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Lunge" Class="Skill" Command="CommandLunge" SkillName="LongBlades2Lunge" BaseCooldown="15" DeletePhrases=" You must move through the empty space.~ make an"></abilityEntry>
+    <abilityEntry Name="Swipe" Class="Skill" Command="CommandSwipe" SkillName="LongBlades2Swipe" BaseCooldown="15" DeletePhrases=" (strength save; difficulty 30).~ (strength save; difficulty 25 + your Agi modifier)"></abilityEntry>
+  </category>
+
+  <category Name="Skill">
+    <abilityEntry Name="Berate" Class="Skill" Command="CommandPersuasionBerate" SkillName="Persuasion_Berate" BaseCooldown="50"></abilityEntry>
+    <abilityEntry Name="Catapult" Class="Skill" Command="CommandFloorSmash" SkillName=""></abilityEntry>
+    <abilityEntry Name="Charge" Class="Skill" Command="CommandMeleeCharge" SkillName="Tactics_Charge" BaseCooldown="15"></abilityEntry>
+    <abilityEntry Name="Conk" Class="Skill" Command="CommandConk" SkillName="Cudgel_Conk" BaseCooldown="10"></abilityEntry>
+    <abilityEntry Name="Dismember" Class="Skill" Command="CommandDismember" SkillName="Axe_Dismember" BaseCooldown="30"></abilityEntry>
+    <abilityEntry Name="Empty the Clips" Class="Skill" Command="CommandPistolEmptyTheClips" SkillName="Pistol_EmptyTheClips" BaseCooldown="200"></abilityEntry>
+    <abilityEntry Name="En Garde!" Class="Skill" Command="CommandDeathblow" SkillName="LongBlades2Deathblow" BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Flurry" Class="Skill" Command="CommandFussilade" SkillName="Dual_Wield_Fussilade" BaseCooldown="60" CooldownChangeSkills="Dual_Wield_Ambidexterity:-10,Dual_Wield_Two_Weapon_Fighting:-10"></abilityEntry>
+    <abilityEntry Name="Heal" Class="Skill" Command="CommandFirstaidHeal" SkillName="Firstaid_Heal" BaseCooldown="200"></abilityEntry>
+    <abilityEntry Name="Hobble" Class="Skill" Command="CommandHobble" SkillName="ShortBlades_Hobble" BaseCooldown="30"></abilityEntry>
+    <abilityEntry Name="Hook and Drag" Class="Skill" Command="CommandAxeHookAndDrag" SkillName="Axe_HookAndDrag" BaseCooldown="50" DeletePhrases=" grab an opponent's limb with the heel of your axe and pull them toward you. If successful, you~ (strength save; difficulty 20 + your strength modifier)~ (same save)"></abilityEntry>
+    <abilityEntry Name="Howl" Class="Skill" Command="CommandSnapjawHowl" SkillName=""></abilityEntry>
+    <abilityEntry Name="Intimidate" Class="Skill" Command="CommandIntimidate" SkillName="Persuasion_Intimidate" BaseCooldown="50"></abilityEntry>
+    <abilityEntry Name="Juke" Class="Skill" Command="CommandTacticsJuke" SkillName="Tactics_Juke" BaseCooldown="40" CooldownChangeSkills="Acrobatics_Tumble:-20"></abilityEntry>
+    <abilityEntry Name="Jump" Class="Skill" Command="CommandAcrobaticsJump" SkillName="Acrobatics_Jump" BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Lunge" Class="Skill" Command="CommandLunge" SkillName="LongBlades2Lunge" BaseCooldown="15" DeletePhrases=" You must move through the empty space.~ make an"></abilityEntry>
+    <abilityEntry Name="Mark Target" Class="Skill" Command="CommandMarkTarget" SkillName="Rifle_DrawABead"></abilityEntry>
+    <abilityEntry Name="Meditate" Class="Skill" Command="CommandDisciplineMeditate" SkillName="Discipline_Meditate" BaseCooldown="200"></abilityEntry>
+    <abilityEntry Name="Menacing Stare" Class="Skill" Command="CommandPistolMenacingStare" SkillName="Pistol_MenacingStare" BaseCooldown="75"></abilityEntry>
+<!--    <abilityEntry Name="Offer Gift" Class="Skill" Command="CommandPersuasionParley" SkillName="Persuasion_Parley"></abilityEntry>                         -->
+    <abilityEntry Name="Proselytize" Class="Skill" Command="CommandProselytize" SkillName="Persuasion_Proselytize" BaseCooldown="25"></abilityEntry>
+    <abilityEntry Name="Rebuke Robot" Class="Skill" Command="CommandRebukeRobot" SkillName="Persuasion_RebukeRobot" CustomDescription="Rebuke a robot, potentially bending it to your will." BaseCooldown="100"></abilityEntry>
+    <abilityEntry Name="Recharge" Class="Skill" Command="CommandRechargeObject" SkillName="Tinkering_Tinker1" CustomDescription="You can use spare bits to recharge energy cells and capacitors."></abilityEntry>
+    <abilityEntry Name="Set Limb" Class="Skill" Command="CommandFirstaidSetlimb" SkillName="Firstaid_Setlimb" BaseCooldown="500"></abilityEntry>
+    <abilityEntry Name="Shield Slam" Class="Skill" Command="CommandShieldSlam" SkillName="Shield_Slam" BaseCooldown="40"></abilityEntry>
+    <abilityEntry Name="Shield Wall" Class="Skill" Command="CommandShieldWall" SkillName="Shield_ShieldWall" BaseCooldown="30"></abilityEntry>
+    <abilityEntry Name="Slam" Class="Skill" Command="CommandCudgelSlam" SkillName="Cudgel_Slam" BaseCooldown="50" DeletePhrases=" make an~ at an adjacent opponent~ Colossal opponents don't get pushed but are still stunned for 1 round."></abilityEntry>
+    <abilityEntry Name="Staunch Wounds" Class="Skill" Command="CommandStaunchWounds" SkillName="Firstaid_StaunchWounds"></abilityEntry>
+    <abilityEntry Name="Sweep" Class="Skill" Command="CommandHeavyWeaponsSweep" SkillName="HeavyWeapons_Sweep" BaseCooldown="250"></abilityEntry>
+    <abilityEntry Name="Swipe" Class="Skill" Command="CommandSwipe" SkillName="LongBlades2Swipe" BaseCooldown="15" DeletePhrases=" (strength save; difficulty 30).~ (strength save; difficulty 25 + your Agi modifier)"></abilityEntry>
+  </category>
+
+  <category Name="Tinkering">
+    <abilityEntry Name="Deploy Turret" Class="Tinkering" Command="CommandDeployTurret" SkillName="Tinkering_DeployTurret"></abilityEntry>
+    <abilityEntry Name="Lay Mine" Class="Tinkering" Command="CommandLayMine" SkillName="Tinkering_LayMine"></abilityEntry>
+    <abilityEntry Name="Set Bomb" Class="Tinkering" Command="CommandLayMineTimed" SkillName="Tinkering_LayMine"></abilityEntry>
+  </category>
+
+  <category Name="Tonics">
+    <abilityEntry Name="Phase" Class="Tonics" Command="ShadeOilPhase" CustomDescription="You may phase through solid objects for brief periods of time."></abilityEntry>
+  </category>
+</abilityEntries>
+
