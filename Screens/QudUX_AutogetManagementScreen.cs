@@ -70,7 +70,7 @@ namespace XRL.UI
 				if (optionStrings.Count <= 0)
                 {
 					Buffer.Write(9, 2, "{{K|You haven't disabled auto-pickup}}");
-					Buffer.Write(9, 2, "{{K|         for any items}}");
+					Buffer.Write(9, 3, "{{K|         for any items}}");
 				}
 				else
 				{
