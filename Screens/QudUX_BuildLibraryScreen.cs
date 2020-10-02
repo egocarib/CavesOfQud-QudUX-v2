@@ -5,6 +5,8 @@ using XRL.World;
 using XRL.World.Parts;
 using XRL.World.Parts.Mutation;
 using ConsoleLib.Console;
+using QudUXOptions = QudUX.Concepts.Options;
+using static QudUX.Concepts.Constants.MethodsAndFields;
 
 namespace XRL.UI
 {
@@ -20,6 +22,18 @@ namespace XRL.UI
 			Console = console;
 			ScrapBuffer = buffer;
 		}
+
+		public static string PatchHandleBuildLibraryManagement()
+        {
+			if (Options.OverlayUI || !QudUXOptions.UI.UseQudUXBuildLibrary)
+            {
+				return (string)CreateCharacter_BuildLibraryManagement.Invoke(null, null);
+			}
+			else
+            {
+				return QudUX_BuildLibraryScreen.Show();
+            }
+        }
 
 		public static string Show()
 		{
@@ -64,7 +78,10 @@ namespace XRL.UI
 					Event.ResetPool();
 					ScrapBuffer.Clear();
 					ScrapBuffer.SingleBox(0, 0, 79, 24, ColorUtility.MakeColor(TextColor.Grey, TextColor.Black));
-					ScrapBuffer.SingleBox(infoboxStartX - 2, 0, 79, 24, ColorUtility.MakeColor(TextColor.Grey, TextColor.Black));
+					if (buildEntries.Count > 0)
+					{
+						ScrapBuffer.SingleBox(infoboxStartX - 2, 0, 79, 24, ColorUtility.MakeColor(TextColor.Grey, TextColor.Black));
+					}
 					ScrapBuffer.Goto(32, 0);
 					ScrapBuffer.Write("{{y|[ {{W|Build Library}} ]}}");
 					ScrapBuffer.Goto(60, 0);
@@ -85,6 +102,7 @@ namespace XRL.UI
                         }
 						ScrapBuffer.Write($"{{{{y|{prefix}{buildName}{postfix}}}}}");
 					}
+					string currentBuildCode = null;
 					if (buildEntries.Count <= 0)
 					{
 						string[] array = StringFormat.ClipText("You don't have any character builds in your library. You can save a build after you create a character, or you can find builds online and import their codes.", 70).Split('\n');
@@ -94,13 +112,15 @@ namespace XRL.UI
 							ScrapBuffer.Write(array[j]);
 						}
 					}
-
-					string currentBuildCode = buildEntries[currentIndex].Code;
-					if (currentBuildCode != lastBuiltCode)
-                    {
-						lastBuiltCode = currentBuildCode;
-						MakeBody(currentBuildCode);
-						buildInfo = GetBuildSidebarInfo();
+					else
+					{
+						currentBuildCode = buildEntries[currentIndex].Code;
+						if (currentBuildCode != lastBuiltCode)
+						{
+							lastBuiltCode = currentBuildCode;
+							MakeBody(currentBuildCode);
+							buildInfo = GetBuildSidebarInfo();
+						}
 					}
 
 					bool hasScrollableBuildInfo = buildInfo.Count > infoboxHeight;
@@ -253,7 +273,7 @@ namespace XRL.UI
 					{
 						CreateCharacter.ClipboardHelper.SetClipboardData(currentBuildCode.ToUpper());
 					}
-					if (keys == Keys.R)
+					if (keys == Keys.R && buildEntries.Count > 0)
 					{
 						string text2 = Popup.AskString("Give this build a new name.", "", 60);
 						if (!string.IsNullOrEmpty(text2))
@@ -263,7 +283,7 @@ namespace XRL.UI
 							break;
 						}
 					}
-					if (keys == Keys.T)
+					if (keys == Keys.T && buildEntries.Count > 0)
 					{
 						CreateCharacter.ShareToTwitter("HEY! Try my Caves of Qud character build. I call it, \""
 							+ buildEntries[currentIndex].Name + "\".\n" + currentBuildCode.ToUpper());

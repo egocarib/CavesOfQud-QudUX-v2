@@ -185,7 +185,8 @@ namespace QudUX.Concepts
             }
             public static MethodInfo QudUX_BuildLibraryScreen_Show
             {
-                get { return GetMethodInfo(() => QudUX_BuildLibraryScreen.Show()); }
+                //get { return GetMethodInfo(() => QudUX_BuildLibraryScreen.Show()); }
+                get { return GetMethodInfo(() => QudUX_BuildLibraryScreen.PatchHandleBuildLibraryManagement()); }
             }
             public static MethodInfo CreateCharacterExtender_WriteCharCreateSpriteOptionText
             {
