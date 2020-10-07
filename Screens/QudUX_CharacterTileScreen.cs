@@ -7,7 +7,7 @@ using System;
 
 namespace XRL.UI
 {
-    [UIView("QudUX:CharacterTile", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: "QudUX:CharacterTile")]
+    [UIView("QudUX:CharacterTile", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: null)]
     public class QudUX_CharacterTileScreen : IScreen, IWantsTextConsoleInit
     {
         private static TextConsole Console;

@@ -241,7 +241,7 @@ namespace XRL.UI.QudUX_DummyTradeNamespace
 
     }
 
-    [UIView("Trade", ForceFullscreen: true, NavCategory: "Trade,Menu")]
+    [UIView("Trade", ForceFullscreen: true, NavCategory: "Trade,Menu", UICanvas: null)]
     public class TradeUI : IWantsTextConsoleInit
     {
 

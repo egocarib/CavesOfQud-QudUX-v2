@@ -15,7 +15,7 @@ namespace XRL.UI
     //I haven't edited in all cases. I've cleaned things up in a few places where I was making larger
     //adjustments, but the code is still a bit funky. I don't want to refactor it too much in case
     //further changes are made in the base game that cause me to return here and compare or update.
-    [UIView("QudUX:Inventory", ForceFullscreen: true, NavCategory: "Charactersheet,Menu,Nocancelescape", UICanvas: "QudUX:Inventory")]
+    [UIView("QudUX:Inventory", ForceFullscreen: true, NavCategory: "Charactersheet,Menu,Nocancelescape", UICanvas: null)]
     public class QudUX_InventoryScreen : IScreen, IWantsTextConsoleInit
     {
         static Dictionary<char, GameObject> SelectionList = new Dictionary<char, GameObject>();
@@ -294,7 +294,6 @@ namespace XRL.UI
 
         public ScreenReturn Show(GameObject GO)
         {
-            //GameManager.Instance.PushGameView("Inventory");
             GameManager.Instance.PushGameView("QudUX:Inventory");
             QudUX_InventoryScreenState SavedInventoryState = GO.RequirePart<QudUX_InventoryScreenState>();
             InventoryScreenExtender.TabController TabController = new InventoryScreenExtender.TabController(GO);

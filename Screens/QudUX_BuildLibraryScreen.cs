@@ -10,7 +10,7 @@ using static QudUX.Concepts.Constants.MethodsAndFields;
 
 namespace XRL.UI
 {
-	[UIView("QudUX:BuildLibrary", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: "QudUX:BuildLibrary")]
+	[UIView("QudUX:BuildLibrary", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: null)]
 	public class QudUX_BuildLibraryScreen : IWantsTextConsoleInit
     {
 		public static CharacterTemplate BuildTemplate;

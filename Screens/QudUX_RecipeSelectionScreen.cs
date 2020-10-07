@@ -10,7 +10,7 @@ using QudUX.Utilities;
 
 namespace XRL.UI
 {
-	[UIView("QudUX:CookRecipes", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: "QudUX:CookRecipes")]
+	[UIView("QudUX:CookRecipes", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: null)]
 	public class QudUX_RecipeSelectionScreen : IScreen, IWantsTextConsoleInit
     {
 		private static TextConsole Console;
@@ -89,7 +89,7 @@ namespace XRL.UI
 
 			recipeList.Sort(RecipeComparator);
 
-			GameManager.Instance.PushGameView("QudUX:CookRecipes");
+            GameManager.Instance.PushGameView("QudUX:CookRecipes");
 			ScreenBuffer cachedScrapBuffer = ScreenBuffer.GetScrapBuffer2(true);
 			Keys keys = Keys.None;
 			bool shouldExitMenu = false;
