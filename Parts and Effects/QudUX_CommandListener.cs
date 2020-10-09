@@ -7,11 +7,14 @@ namespace XRL.World.Parts
     {
         public static readonly string CmdOpenSpriteMenu = "QudUX_OpenSpriteMenu";
         public static readonly string CmdOpenAutogetMenu = "QudUX_OpenAutogetMenu";
+        public static readonly string cmdOpenGameStatsMenu = "QudUX_OpenGameStatsMenu";
 
         public override void Register(GameObject Object)
         {
             Object.RegisterPartEvent(this, CmdOpenSpriteMenu);
             Object.RegisterPartEvent(this, CmdOpenAutogetMenu);
+            Object.RegisterPartEvent(this, cmdOpenGameStatsMenu);
+            
             base.Register(Object);
         }
 
@@ -24,6 +27,10 @@ namespace XRL.World.Parts
             if (E.ID == CmdOpenAutogetMenu)
             {
                 QudUX.Wishes.AutopickupMenu.Wish();
+            }
+            if (E.ID == cmdOpenGameStatsMenu)
+            {
+                QudUX.Wishes.GameStatsMenu.Wish();
             }
             return base.FireEvent(E);
         }

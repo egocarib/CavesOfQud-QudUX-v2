@@ -1,8 +1,170 @@
 ﻿
 using ConsoleLib.Console;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace QudUX.Utilities
 {
+    public class Table
+    {
+        public class ColumnDefinition
+        {
+            public string Header { get; set; }
+            public int Width { get; set; }
+        }
+        public int TableWidth { get; private set; }
+        public int MaxVisibleRows  { get; set; } = 18;
+        public int CurrentVisibleRows  { get ; private set ; } 
+        public bool ShowHeader { get ; private set ; }  = true;
+        private int selectedIndex;
+        public int SelectedIndex
+        {
+            get { return selectedIndex; }
+            set { selectedIndex = Math.Min(MaxVisibleRows - 1,value); }
+        }
+        public bool ShowSelection { get; set; } = true;
+
+        public string HeaderTemplate { get; set; } = "W-R-W alternation";
+
+        public int Offset { get; set; } = 0;
+
+        private List<ColumnDefinition> columns;
+        private List<List<string>> rows = new List<List<string>>();
+
+        public List<ColumnDefinition> ColumnsDefinition
+        {
+            get => columns;
+            set
+            {
+                columns = value;
+                if (columns != null)
+                {
+                    TableWidth = (from c in columns select c.Width).Sum() + columns.Count  +1;
+                }
+            }
+        }
+
+        public List<List<string>> Rows { get => rows; set => rows = value; }
+
+        public Table(List<ColumnDefinition> columns)
+        {
+            ColumnsDefinition = columns;
+        }
+
+        public void Display(ScreenBuffer screenBuffer, int x, int y)
+        {
+            int line = y;
+            if (ShowHeader)
+            {
+                DisplayHeader(screenBuffer, x, y);
+			    line += 3;
+            }
+            
+            int rownum = 0;
+            var visibleRows = rows.Skip(Offset).Take(MaxVisibleRows);
+            CurrentVisibleRows = visibleRows.Count();
+			foreach(List<string> row in visibleRows)
+			{
+                bool selected = ShowSelection && (rownum  == SelectedIndex);
+            	DisplayRow(screenBuffer,row,x,line,selected);
+				line++;
+                rownum++;
+			}
+
+        }
+        public void ScrollPage (int direction)
+        {
+            if ((Offset + (direction * MaxVisibleRows) < rows.Count) && (Offset + (direction * MaxVisibleRows) >= 0))
+            {
+                Offset += (direction * MaxVisibleRows);
+            }
+        }
+
+        public void Scroll (int direction)
+        {
+            if ((Offset + direction < rows.Count) && (Offset + direction  >= 0))
+            {
+                Offset += direction ;
+            }
+        }
+
+        public void MoveSelection (int direction)
+        {
+            if ((SelectedIndex + direction < CurrentVisibleRows) && (SelectedIndex + direction   >= 0))
+            {
+                SelectedIndex += direction ;
+                return;
+            }
+
+            if (SelectedIndex + direction   < 0)
+            {
+                SelectedIndex = CurrentVisibleRows - 1;
+                return; 
+            }
+
+            if (SelectedIndex + direction >= CurrentVisibleRows)
+            {
+                SelectedIndex = 0;
+                return;
+            }
+        }
+
+        private void DisplayHeader(ScreenBuffer screenBuffer, int line, int col)
+        {
+            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
+            screenBuffer.SingleBox(col, line, TableWidth, line + 2, colorGrey);
+            int pos = col;
+			for(int colidx=0 ; colidx < columns.Count; colidx++)
+			{
+				ColumnDefinition cold = columns[colidx];
+				screenBuffer.Goto(pos + 1, line+1);
+
+                if (HeaderTemplate.Length > 0)				    
+                    screenBuffer.Write("{{"+HeaderTemplate+"|" + cold.Header+"}}");
+                else
+                    screenBuffer.Write(cold.Header);
+
+                pos = pos + cold.Width + 1;
+
+				if (colidx < columns.Count -1)
+                	screenBuffer.SingleBoxVerticalDivider(pos, line, line + 2);
+                
+            }
+        }
+
+        private void DisplayRow(ScreenBuffer screenBuffer, List<string> row ,int x, int y,bool selected)
+        {
+            int postxt = x+1;
+
+			for(int col=0 ; col < columns.Count; col++)
+			{
+				ColumnDefinition cd = columns[col];
+                string rowVal = row[col];
+                // trim last column if necessary
+                if (rowVal.Length > cd.Width)
+                {
+                    rowVal = rowVal.Substring(0,cd.Width-1);
+                }
+                
+                if (selected && col == 0)
+                {
+                    rowVal =">" + rowVal;
+                    screenBuffer.Goto(postxt-1, y);
+                } 
+                else
+                {
+                    screenBuffer.Goto(postxt, y);
+                }
+
+				screenBuffer.Write(rowVal);
+				postxt += cd.Width + 1;
+			}
+        }
+
+
+    }
+
     public static class ConsoleUtilities
     {
         public static void WriteLine(this ScreenBuffer buffer, string text)
@@ -101,6 +263,20 @@ namespace QudUX.Utilities
                     ScreenBuffer.ImposterSuppression[j, i] = bShouldSuppress;
                 }
             }
+        }
+        public static void SingleBoxVerticalDivider(this ScreenBuffer buffer, int x, int y1, int y2)
+        {
+            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
+
+            for (int y = y1; y < y2 ; y++)
+            {
+                buffer[x, y].Char = (char)179;       //  │
+                buffer[x, y].Attributes = colorGrey;
+            }
+            buffer[x, y1].Char = (char)194;           //  ┬
+            buffer[x, y1].Attributes = colorGrey;
+            buffer[x, y2].Char = (char)193;          //  ┴
+            buffer[x, y2].Attributes = colorGrey;
         }
 
     }
