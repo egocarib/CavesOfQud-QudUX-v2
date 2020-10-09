@@ -36,17 +36,18 @@ namespace XRL.UI
 			EnhancedScoreboard scoreboard = EnhancedScoreboard.Load();
             
 			ScoreList = (from s in scoreboard.EnhancedScores
+						where !s.Abandoned
                         orderby s.Score descending
                         select s).ToList();
 			
 			//Logger.Log(ScoreList.Count.ToString() + " games found");
 
-            var StatsByLevel = from score in scoreboard.EnhancedScores
+            var StatsByLevel = from score in ScoreList
                                group score by score.Level into levelGroup
                                orderby levelGroup.Count() descending
                                select  new { Level = levelGroup.Key, Nb = levelGroup.Count() } ;
 
-            var StatsByDeathCause = from score in scoreboard.EnhancedScores
+            var StatsByDeathCause = from score in ScoreList
                                group score by score.KilledBy into DeathCauseGroup
                                orderby DeathCauseGroup.Count() descending
                                select new { DeathCause = DeathCauseGroup.Key, Nb = DeathCauseGroup.Count() } ;
@@ -99,7 +100,7 @@ namespace XRL.UI
 			Table deathCauseTable = new Table(
 				new List<Table.ColumnDefinition>
 				{
-					new Table.ColumnDefinition {Header="Cause",Width=40},
+					new Table.ColumnDefinition {Header="Death Cause",Width=40},
 					new Table.ColumnDefinition {Header="# Games",Width=10},
 				}
 			);
@@ -133,8 +134,8 @@ namespace XRL.UI
 					currentTable = deathCauseTable;
                 }
 
-				    Buffer.Goto(2, 23);
-                    Buffer.Write(scoreboard.EnhancedScores.Count.ToString() + " {{O|games}}");
+				Buffer.Goto(2, 23);
+				Buffer.Write(ScoreList.Count.ToString() + " {{O|games}}");
                 /*
 				// debug table
 				Buffer.Goto(1,24);

@@ -137,6 +137,8 @@ namespace XRL.World.Parts
                 }
                 KilledBy = ColorUtility.StripFormatting(RemoveEffect(kb)).Trim();
 
+                Abandoned = KilledBy.StartsWith("abandoned");
+
                 // get Level
                 line++;
                 var elts = details[line].Split(' ');
@@ -178,6 +180,7 @@ namespace XRL.World.Parts
         public int Level { get; set; }
         public int Turns { get; set; }
         public string Version { get; set; }
+        public bool Abandoned{get ; set;} 
 
         private void CopyFields(ScoreEntry scoreEntry)
         {
