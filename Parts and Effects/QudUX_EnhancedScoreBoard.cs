@@ -159,7 +159,7 @@ namespace QudUX.ScreenExtenders
 
         private string RemoveEffect(string part)
         {
-            string[] effects = new string[] { "bloody","slimmy" ,"tarred", "salty"};
+            string[] effects = new string[] { "bloody","slimy" ,"tarred", "salty"};
             foreach(var e in effects)
             {
                 part = part.Replace(e,"");
