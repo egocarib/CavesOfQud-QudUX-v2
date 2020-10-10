@@ -2,5 +2,5 @@
 <commands>
   <command ID="QudUX_OpenSpriteMenu" DisplayText="Modify Character Sprite" Category="QudUX"></command>
   <command ID="QudUX_OpenAutogetMenu" DisplayText="Open Autoget Settings" Category="QudUX"></command>
-  <command ID="QudUX_OpenGameStatsMenu" DisplayText="Display games statistics" Category="QudUX"></command>
+  <command ID="QudUX_OpenGameStatsMenu" DisplayText="Display Games Statistics" Category="QudUX"></command>
 </commands>
