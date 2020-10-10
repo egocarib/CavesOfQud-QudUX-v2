@@ -12,7 +12,7 @@ using ConsoleLib.Console;
 using System.Text.RegularExpressions;
 using QudUX.Utilities;
 
-namespace XRL.World.Parts
+namespace QudUX.ScreenExtenders
 {
 
     [Serializable]
