@@ -15,7 +15,6 @@ using QudUX.Utilities;
 namespace QudUX.ScreenExtenders
 {
 
-    [Serializable]
     public class EnhancedScoreboard : Scoreboard
     {
         public List<EnhancedScoreEntry> EnhancedScores = new List<EnhancedScoreEntry>();
