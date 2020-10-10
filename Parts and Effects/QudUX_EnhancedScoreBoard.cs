@@ -34,8 +34,7 @@ namespace QudUX.ScreenExtenders
             }
             catch (Exception ex)
             {
-				
-				//Logger.Log("ERROR :" + ex.Message);
+			Utilities.Logger.Log($"(Error) Failed to load HighScores.dat [{ex}]");
                 instance = new EnhancedScoreboard();
             }
             return instance;
