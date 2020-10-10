@@ -154,12 +154,12 @@ namespace XRL.UI
 
 				if (currentTable != null)
 				{
-					if (keys == Keys.NumPad3)
+					if (keys == Keys.NumPad3 || keys == Keys.Next)
 					{
 						currentTable.ScrollPage(1);
 					}
 
-					if (keys == Keys.NumPad9)
+					if (keys == Keys.NumPad9 || keys == Keys.Prior)
 					{
 						currentTable.ScrollPage(-1);
 					}
