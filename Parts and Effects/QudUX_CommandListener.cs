@@ -18,6 +18,11 @@ namespace XRL.World.Parts
             base.Register(Object);
         }
 
+		public override bool AllowStaticRegistration()
+		{
+			return true;
+		}
+		
         public override bool FireEvent(Event E)
         {
             if (E.ID == CmdOpenSpriteMenu)
