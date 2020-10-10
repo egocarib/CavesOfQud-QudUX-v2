@@ -153,8 +153,7 @@ namespace QudUX.ScreenExtenders
             }
             catch (Exception)
             {
-               // throw new Exception("Exception line " + line.ToString() + " : " + details[line] );
-				//Logger.Log("Exception line " + line.ToString() + " : " + details[line] );
+			Utilities.Logger.Log($"(Error) Unexpected issue parsing High Score entry [{ex}]");
             }
         }
 
