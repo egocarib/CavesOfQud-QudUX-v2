@@ -47,6 +47,10 @@ namespace XRL.World.Parts
     {
         public EnhancedScoreEntry(ScoreEntry scoreEntry) : base(scoreEntry.Score, scoreEntry.Description, scoreEntry.Details)
         {
+
+            if ((scoreEntry == null) || (string.IsNullOrEmpty(scoreEntry.Details)))
+                return;
+                
             CopyFields(scoreEntry);
 
             var details = scoreEntry.Details.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
