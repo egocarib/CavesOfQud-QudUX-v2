@@ -12,10 +12,9 @@ using ConsoleLib.Console;
 using System.Text.RegularExpressions;
 using QudUX.Utilities;
 
-namespace XRL.World.Parts
+namespace QudUX.ScreenExtenders
 {
 
-    [Serializable]
     public class EnhancedScoreboard : Scoreboard
     {
         public List<EnhancedScoreEntry> EnhancedScores = new List<EnhancedScoreEntry>();
@@ -35,8 +34,7 @@ namespace XRL.World.Parts
             }
             catch (Exception ex)
             {
-				
-				//Logger.Log("ERROR :" + ex.Message);
+			Utilities.Logger.Log($"(Error) Failed to load HighScores.dat [{ex}]");
                 instance = new EnhancedScoreboard();
             }
             return instance;
@@ -159,14 +157,13 @@ namespace XRL.World.Parts
             }
             catch (Exception)
             {
-               // throw new Exception("Exception line " + line.ToString() + " : " + details[line] );
-				//Logger.Log("Exception line " + line.ToString() + " : " + details[line] );
+			Utilities.Logger.Log($"(Error) Unexpected issue parsing High Score entry [{ex}]");
             }
         }
 
         private string RemoveEffect(string part)
         {
-            string[] effects = new string[] { "bloody","slimmy" ,"tarred", "salty"};
+            string[] effects = new string[] { "bloody","slimy" ,"tarred", "salty"};
             foreach(var e in effects)
             {
                 part = part.Replace(e,"");
