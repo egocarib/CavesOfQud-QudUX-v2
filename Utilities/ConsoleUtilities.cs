@@ -64,8 +64,11 @@ namespace QudUX.Utilities
             int rownum = 0;
             var visibleRows = rows.Skip(Offset).Take(MaxVisibleRows);
             CurrentVisibleRows = visibleRows.Count();
+            if (SelectedIndex > CurrentVisibleRows)
+                SelectedIndex = 0;
 			foreach(List<string> row in visibleRows)
 			{
+                
                 bool selected = ShowSelection && (rownum  == SelectedIndex);
             	DisplayRow(screenBuffer,row,x,line,selected);
 				line++;
@@ -146,7 +149,7 @@ namespace QudUX.Utilities
                 {
                     rowVal = rowVal.Substring(0,cd.Width-1);
                 }
-                
+
                 if (selected && col == 0)
                 {
                     rowVal =">" + rowVal;
@@ -236,17 +239,7 @@ namespace QudUX.Utilities
 
         public static void SingleBoxVerticalDivider(this ScreenBuffer buffer, int x)
         {
-            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
-
-            for (int y = 1; y < 24; y++)
-            {
-                buffer[x, y].Char = (char)179;       //  │
-                buffer[x, y].Attributes = colorGrey;
-            }
-            buffer[x, 0].Char = (char)194;           //  ┬
-            buffer[x, 0].Attributes = colorGrey;
-            buffer[x, 24].Char = (char)193;          //  ┴
-            buffer[x, 24].Attributes = colorGrey;
+            SingleBoxVerticalDivider(buffer,x,0,24);
         }
 
         public static void Fill(this ScreenBuffer buffer, int x1, int y1, int x2, int y2)
@@ -268,7 +261,7 @@ namespace QudUX.Utilities
         {
             ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
 
-            for (int y = y1; y < y2 ; y++)
+            for (int y = y1 + 1; y < y2 ; y++)
             {
                 buffer[x, y].Char = (char)179;       //  │
                 buffer[x, y].Attributes = colorGrey;
