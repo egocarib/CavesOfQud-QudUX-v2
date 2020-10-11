@@ -36,7 +36,7 @@ namespace XRL.UI
 			EnhancedScoreboard scoreboard = EnhancedScoreboard.Load();
             
 			ScoreList = (from s in scoreboard.EnhancedScores
-						where !s.Abandoned
+						//where !s.Abandoned
                         orderby s.Score descending
                         select s).ToList();
 			
