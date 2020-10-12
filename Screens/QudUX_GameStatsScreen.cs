@@ -82,6 +82,11 @@ namespace XRL.UI
                     return ScreenReturn.Exit;
                 }
 
+				if (keys == Keys.OemQuestion)
+				{
+					ShowQuickKeys();
+				}
+
                 if (currentTable != null)
                 {
                     if (keys == Keys.NumPad3 || keys == Keys.Next)
@@ -104,7 +109,7 @@ namespace XRL.UI
                         currentTable.MoveSelection(-1);
                     }
 
-					if (keys == Keys.Space)
+					if (keys == (Keys)131137)
 					{
 						showAbandonned = !showAbandonned;
             			FillTables(out scoreTable, out levelsTable, out deathCauseTable, showAbandonned );
@@ -138,6 +143,24 @@ namespace XRL.UI
             }
         }
 
+		private void ShowQuickKeys()
+		{
+			
+			List<Tuple<string,string>> qk = new List<Tuple<string,string>>
+			{
+				new Tuple<string,string>("8","Selection Down"),
+				new Tuple<string,string>("2","Selection Up"),
+				new Tuple<string,string>("9","Page Up"),
+				new Tuple<string,string>("3", "Page Down"),
+				new Tuple<string,string>("Ctrl+A", "Toggle abandoned game count"),
+
+			};
+			var stxt = from s in qk select "&W" + s.Item1 + "&y - " + s.Item2;
+			string helptxt = string.Join("\r\n",stxt.ToArray());;
+
+			Popup.Show("Statistics quick keys\r\n\r\n" + helptxt);
+
+		}
         private void FillTables(out Table scoreTable, out Table levelsTable, out Table deathCauseTable, bool showAbandonned = true )
         {
             EnhancedScoreboard scoreboard = EnhancedScoreboard.Load();
@@ -226,7 +249,8 @@ namespace XRL.UI
             Buffer.Goto(45, 24);
             Buffer.Write("< {{W|4}} Prev. screen | Next Screen {{W|6}} >");
             Buffer.Goto(2, 24);
-            Buffer.Write("[{{W|8}}-Sel.Up {{W|2}}-Sel.Down {{W|9}}-Pg.Up {{W|3}}-Pg.Down]");
+            //Buffer.Write("[{{W|8}}-Sel.Up {{W|2}}-Sel.Down {{W|9}}-Pg.Up {{W|3}}-Pg.Down]");
+			Buffer.Write("[{{W|?}} view quick keys]");
         }
     }
 }
