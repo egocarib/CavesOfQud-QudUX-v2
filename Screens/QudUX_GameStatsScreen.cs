@@ -152,12 +152,12 @@ namespace XRL.UI
             var StatsByLevel = from score in ScoreList
                                group score by score.Level into levelGroup
                                orderby levelGroup.Count() descending
-                               select new { Level = levelGroup.Key, Nb = levelGroup.Count() };
+                               select new { Level = levelGroup.Key, Nb = levelGroup.Count() ,  Pc= (float) levelGroup.Count() * 100 / ScoreList.Count };
 
             var StatsByDeathCause = from score in ScoreList
                                     group score by score.KilledBy into DeathCauseGroup
                                     orderby DeathCauseGroup.Count() descending
-                                    select new { DeathCause = DeathCauseGroup.Key, Nb = DeathCauseGroup.Count() };
+                                    select new { DeathCause = DeathCauseGroup.Key, Nb = DeathCauseGroup.Count(),  Pc = (float) DeathCauseGroup.Count() * 100 / ScoreList.Count  };
 
             //
             // games list table initialization			
@@ -190,11 +190,12 @@ namespace XRL.UI
                 {
                     new Table.ColumnDefinition {Header="Level",Width=10},
                     new Table.ColumnDefinition {Header="# Games",Width=10},
+					new Table.ColumnDefinition {Header="% Overall",Width=10},
                 }
             );
             foreach (var sb in StatsByLevel)
             {
-                levelsTable.Rows.Add(new List<string> { sb.Level.ToString(), sb.Nb.ToString() });
+                levelsTable.Rows.Add(new List<string> { sb.Level.ToString(), sb.Nb.ToString() ,sb.Pc.ToString("0.0")});
             }
 
 
@@ -207,11 +208,12 @@ namespace XRL.UI
                 {
                     new Table.ColumnDefinition {Header="Death Cause",Width=40},
                     new Table.ColumnDefinition {Header="# Games",Width=10},
+					new Table.ColumnDefinition {Header="% Overall",Width=10},
                 }
             );
             foreach (var sb in StatsByDeathCause)
             {
-                deathCauseTable.Rows.Add(new List<string> { sb.DeathCause, sb.Nb.ToString() });
+                deathCauseTable.Rows.Add(new List<string> { sb.DeathCause, sb.Nb.ToString(),sb.Pc.ToString("0.0") });
             }
         }
 
