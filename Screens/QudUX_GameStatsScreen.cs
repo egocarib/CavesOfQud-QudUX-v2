@@ -5,6 +5,7 @@ using ConsoleLib.Console;
 using XRL.World;
 using XRL.World.Parts;
 using QudUX.Utilities;
+using QudUX.ScreenExtenders;
 
 namespace XRL.UI
 {
@@ -29,113 +30,42 @@ namespace XRL.UI
 			Buffer = buffer;
 		}
 		public ScreenReturn Show(GameObject GO)
-		{
-			currentScreen = StatsScreen.GamesList;
-	
-			//Logger.Log("Loading scoreboard");
-			EnhancedScoreboard scoreboard = EnhancedScoreboard.Load();
-            
-			ScoreList = (from s in scoreboard.EnhancedScores
-						//where !s.Abandoned
-                        orderby s.Score descending
-                        select s).ToList();
-			
-			//Logger.Log(ScoreList.Count.ToString() + " games found");
+        {
+            currentScreen = StatsScreen.GamesList;
 
-            var StatsByLevel = from score in ScoreList
-                               group score by score.Level into levelGroup
-                               orderby levelGroup.Count() descending
-                               select  new { Level = levelGroup.Key, Nb = levelGroup.Count() } ;
+            //Logger.Log("Loading scoreboard");
+            Table scoreTable, levelsTable, deathCauseTable;
+			bool showAbandonned = true;
 
-            var StatsByDeathCause = from score in ScoreList
-                               group score by score.KilledBy into DeathCauseGroup
-                               orderby DeathCauseGroup.Count() descending
-                               select new { DeathCause = DeathCauseGroup.Key, Nb = DeathCauseGroup.Count() } ;
-
-			//
-			// games list table initialization			
-			//
-			
-			Table scoreTable = new Table(
-				new List<Table.ColumnDefinition>
-				{
-					new Table.ColumnDefinition {Header="Name",Width=18},
-					new Table.ColumnDefinition {Header="Date",Width=10},
-					new Table.ColumnDefinition {Header="Score",Width=8},
-					new Table.ColumnDefinition {Header="Lvl",Width=5},
-					new Table.ColumnDefinition {Header="Killed by",Width=31},
-				}
-			);
-
-			foreach(var sb in ScoreList)
-			{
-				string game =   sb.CharacterName + " " + sb.DeathDate.ToString("yyyy-MM-dd")  + "  "   + sb.Score.ToString()  + " " + sb.Level.ToString() +" " ;
-				//Logger.Log(game);
-				scoreTable.Rows.Add(new List<string> {sb.CharacterName  , sb.DeathDate.ToString("yyyy-MM-dd")  , sb.Score.ToString() , sb.Level.ToString(), sb.KilledBy });
-	
-			}
-
-			//
-			// levels stats table initialization			
-			//
-			
-			Table levelsTable = new Table(
-				new List<Table.ColumnDefinition>
-				{
-					new Table.ColumnDefinition {Header="Level",Width=10},
-					new Table.ColumnDefinition {Header="# Games",Width=10},
-				}
-			);
-
-			foreach(var sb in StatsByLevel)
-			{
-				levelsTable.Rows.Add(new List<string> {sb.Level.ToString()  , sb.Nb.ToString() });
-			}
+            FillTables(out scoreTable, out levelsTable, out deathCauseTable, showAbandonned );
 
 
-			//
-			// death cause stats table initialization			
-			//
-			
-			Table deathCauseTable = new Table(
-				new List<Table.ColumnDefinition>
-				{
-					new Table.ColumnDefinition {Header="Death Cause",Width=40},
-					new Table.ColumnDefinition {Header="# Games",Width=10},
-				}
-			);
-
-			foreach(var sb in StatsByDeathCause)
-			{
-				deathCauseTable.Rows.Add(new List<string> {sb.DeathCause , sb.Nb.ToString() });
-			}
-
-			while (true)
+            while (true)
             {
                 DisplayScreenFrame();
-				Buffer.Goto(55,0);
-				Buffer.Write(((int) currentScreen) .ToString() + "/3");
+                Buffer.Goto(55, 0);
+                Buffer.Write(((int)currentScreen).ToString() + "/3");
 
-				Table currentTable = null;
+                Table currentTable = null;
                 if (currentScreen == StatsScreen.GamesList)
                 {
                     scoreTable.Display(Buffer, 1, 1);
-					currentTable = scoreTable;
+                    currentTable = scoreTable;
                 }
                 else if (currentScreen == StatsScreen.LevelStats)
                 {
-					levelsTable.Display(Buffer, 1, 1);
-					currentTable = levelsTable;
+                    levelsTable.Display(Buffer, 1, 1);
+                    currentTable = levelsTable;
 
                 }
                 else if (currentScreen == StatsScreen.DeathStats)
                 {
-					deathCauseTable.Display(Buffer, 1, 1);
-					currentTable = deathCauseTable;
+                    deathCauseTable.Display(Buffer, 1, 1);
+                    currentTable = deathCauseTable;
                 }
 
-				Buffer.Goto(2, 23);
-				Buffer.Write(ScoreList.Count.ToString() + " {{O|games}}");
+                Buffer.Goto(2, 23);
+                Buffer.Write(ScoreList.Count.ToString() + " {{O|games}}");
                 /*
 				// debug table
 				Buffer.Goto(1,24);
@@ -152,53 +82,136 @@ namespace XRL.UI
                     return ScreenReturn.Exit;
                 }
 
-				if (currentTable != null)
-				{
-					if (keys == Keys.NumPad3 || keys == Keys.Next)
-					{
-						currentTable.ScrollPage(1);
-					}
+                if (currentTable != null)
+                {
+                    if (keys == Keys.NumPad3 || keys == Keys.Next)
+                    {
+                        currentTable.ScrollPage(1);
+                    }
 
-					if (keys == Keys.NumPad9 || keys == Keys.Prior)
-					{
-						currentTable.ScrollPage(-1);
-					}
+                    if (keys == Keys.NumPad9 || keys == Keys.Prior)
+                    {
+                        currentTable.ScrollPage(-1);
+                    }
 
-					if (keys == Keys.NumPad2)
-					{
-						currentTable.MoveSelection(1);
-					}
+                    if (keys == Keys.NumPad2)
+                    {
+                        currentTable.MoveSelection(1);
+                    }
 
-					if (keys == Keys.NumPad8)
+                    if (keys == Keys.NumPad8)
+                    {
+                        currentTable.MoveSelection(-1);
+                    }
+
+					if (keys == Keys.Space)
 					{
-						currentTable.MoveSelection(-1);
+						showAbandonned = !showAbandonned;
+            			FillTables(out scoreTable, out levelsTable, out deathCauseTable, showAbandonned );
 					}
-				}
+                }
 
                 if (keys == Keys.NumPad6)
                 {
-					if (currentScreen == StatsScreen.DeathStats)
-					{
-						currentScreen = StatsScreen.GamesList;
-					}
-					else
-					{
-						currentScreen++;
-					}
+                    if (currentScreen == StatsScreen.DeathStats)
+                    {
+                        currentScreen = StatsScreen.GamesList;
+                    }
+                    else
+                    {
+                        currentScreen++;
+                    }
                 }
 
                 if (keys == Keys.NumPad4)
                 {
                     if (currentScreen == StatsScreen.GamesList)
-					{
-						currentScreen =   StatsScreen.DeathStats;
-					} 
-					else
-					{ 
-						currentScreen--;
-					}
+                    {
+                        currentScreen = StatsScreen.DeathStats;
+                    }
+                    else
+                    {
+                        currentScreen--;
+                    }
                 }
 
+            }
+        }
+
+        private void FillTables(out Table scoreTable, out Table levelsTable, out Table deathCauseTable, bool showAbandonned = true )
+        {
+            EnhancedScoreboard scoreboard = EnhancedScoreboard.Load();
+
+            ScoreList = (from s in scoreboard.EnhancedScores
+                        where (showAbandonned ||  !s.Abandoned)
+                         orderby s.Score descending
+                         select s).ToList();
+
+            //Logger.Log(ScoreList.Count.ToString() + " games found");
+
+            var StatsByLevel = from score in ScoreList
+                               group score by score.Level into levelGroup
+                               orderby levelGroup.Count() descending
+                               select new { Level = levelGroup.Key, Nb = levelGroup.Count() };
+
+            var StatsByDeathCause = from score in ScoreList
+                                    group score by score.KilledBy into DeathCauseGroup
+                                    orderby DeathCauseGroup.Count() descending
+                                    select new { DeathCause = DeathCauseGroup.Key, Nb = DeathCauseGroup.Count() };
+
+            //
+            // games list table initialization			
+            //
+
+            scoreTable = new Table(
+                new List<Table.ColumnDefinition>
+                {
+                    new Table.ColumnDefinition {Header="Name",Width=18},
+                    new Table.ColumnDefinition {Header="Date",Width=10},
+                    new Table.ColumnDefinition {Header="Score",Width=8},
+                    new Table.ColumnDefinition {Header="Lvl",Width=5},
+                    new Table.ColumnDefinition {Header="Killed by",Width=31},
+                }
+            );
+            foreach (var sb in ScoreList)
+            {
+                string game = sb.CharacterName + " " + sb.DeathDate.ToString("yyyy-MM-dd") + "  " + sb.Score.ToString() + " " + sb.Level.ToString() + " ";
+                //Logger.Log(game);
+                scoreTable.Rows.Add(new List<string> { sb.CharacterName, sb.DeathDate.ToString("yyyy-MM-dd"), sb.Score.ToString(), sb.Level.ToString(), sb.KilledBy });
+
+            }
+
+            //
+            // levels stats table initialization			
+            //
+
+            levelsTable = new Table(
+                new List<Table.ColumnDefinition>
+                {
+                    new Table.ColumnDefinition {Header="Level",Width=10},
+                    new Table.ColumnDefinition {Header="# Games",Width=10},
+                }
+            );
+            foreach (var sb in StatsByLevel)
+            {
+                levelsTable.Rows.Add(new List<string> { sb.Level.ToString(), sb.Nb.ToString() });
+            }
+
+
+            //
+            // death cause stats table initialization			
+            //
+
+            deathCauseTable = new Table(
+                new List<Table.ColumnDefinition>
+                {
+                    new Table.ColumnDefinition {Header="Death Cause",Width=40},
+                    new Table.ColumnDefinition {Header="# Games",Width=10},
+                }
+            );
+            foreach (var sb in StatsByDeathCause)
+            {
+                deathCauseTable.Rows.Add(new List<string> { sb.DeathCause, sb.Nb.ToString() });
             }
         }
 

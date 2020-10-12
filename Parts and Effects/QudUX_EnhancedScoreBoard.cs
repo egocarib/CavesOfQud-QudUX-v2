@@ -155,7 +155,7 @@ namespace QudUX.ScreenExtenders
                 string turns = rgx.Replace(elts[2], "");
                 Turns = int.Parse(turns);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 			Utilities.Logger.Log($"(Error) Unexpected issue parsing High Score entry [{ex}]");
             }
