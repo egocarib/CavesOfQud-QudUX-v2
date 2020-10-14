@@ -3,9 +3,155 @@ using ConsoleLib.Console;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using XRL.UI;
 
 namespace QudUX.Utilities
 {
+
+    public class QudUXBorder
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public void Display(ScreenBuffer buffer)
+        {
+            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
+            buffer[X,Y].Char = (char) 218; //  ┌
+            buffer[X,Y].Attributes = colorGrey;
+            buffer[X+Width-1,Y].Char = (char) 191; // ┐
+            buffer[X+Width-1,Y].Attributes = colorGrey;
+            buffer[X,Y+Height -1].Char = (char) 192; //  └
+            buffer[X,Y+Height -1].Attributes = colorGrey;
+            buffer[X+Width-1,Y+Height -1 ].Char = (char) 217; // ┘
+            buffer[X+Width-1,Y+Height -1 ].Attributes = colorGrey;
+            
+            for (int borderx=X+1; borderx < X+Width - 1 ;borderx++)
+            {
+                    buffer[borderx, Y].Char = (char)196;       //  ─
+                    buffer[borderx, Y].Attributes = colorGrey;
+                    buffer[borderx, Y+Height-1].Char = (char)196;       //  ─
+                    buffer[borderx, Y+Height-1].Attributes = colorGrey;
+            }
+            for (int bordery=Y+1; bordery < Y+Height - 1 ; bordery++) 
+            {
+                    buffer[X, bordery].Char = ((char)179);  // │
+                    buffer[X, bordery].Attributes = colorGrey;
+                    buffer[X+Width - 1, bordery ].Char = ((char)179) ;  // │
+                    buffer[X+Width -1 , bordery ].Attributes = colorGrey; 
+            }
+
+        }
+
+        public QudUXBorder(int x, int y, int width, int height)
+        {
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+        }
+    }
+    public class QudUXTextBlock
+    {
+        public string Text { get => text; set  {text = value; textLines = null;} }
+        private int x, y, width, height;
+        private int offset = 0;
+        public bool DrawBorder = false;
+
+        private List<string> textLines;
+        private string text;
+
+        public QudUXTextBlock(int col, int lig, int ctlWidth, int ctlHeight)
+        {
+            x = col;
+            y = lig;
+            width = ctlWidth;
+            height = ctlHeight;
+        }
+
+        public void Scroll(int direction, int lines)
+        {
+            if (textLines == null) return;
+
+            offset += direction * lines;
+            if (offset < 0)
+                offset = 0;
+
+            if (offset > textLines.Count - 1)
+                offset = textLines.Count - 1;
+
+        }
+        public void Scroll(int direction)
+        {
+            Scroll(direction, 1);
+        }
+
+        public void ScrollPage(int direction)
+        {
+            int pagesize = height - (DrawBorder ? 2 : 0);
+            Scroll(direction, pagesize);
+        }
+        private void FillText(string text)
+        {
+            textLines = new List<string>();
+            var lines = text.Split('\n');
+            int border = 0;
+            if (DrawBorder)
+            {
+                border = 2;
+            }
+
+            for (int i = 0; i < lines.Count(); i++)
+            {
+                // remove formatting to count real number of characters
+                string line = ColorUtility.StripFormatting(lines[i]);
+                if (line.Length + border < width)
+                {
+                    textLines.Add(lines[i]);
+                }
+                else
+                {
+                    var formlines = StringFormat.ClipTextToArray(lines[i], width - border);
+                    foreach (var l in formlines)
+                    {
+                        textLines.Add(l);
+                    }
+                }
+
+            }
+        }
+
+        public void Display(ScreenBuffer buffer)
+        {
+            if (textLines == null) FillText(Text);
+            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
+            int i = 0;
+            int borderSize = 0;
+            int cury = y;
+            int curx = x;
+            if (DrawBorder)
+            {
+                QudUXBorder border = new QudUXBorder(x, y, width, height);
+                border.Display(buffer);
+                borderSize = 2;
+                cury++;
+                curx++;
+
+            }
+            int posTxt = textLines.Count - offset;
+            int limit = Math.Min(posTxt, height - borderSize);
+            for (i = offset; i < offset + limit; i++)
+            {
+                string l = textLines[i];
+                buffer.Goto(curx, cury);
+                buffer.Write(l);
+                cury++;
+            }
+
+
+        }
+    }
     public class Table
     {
         public class ColumnDefinition

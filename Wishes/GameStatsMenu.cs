@@ -2,6 +2,7 @@ using XRL.UI;
 using XRL.Core;
 using XRL.Wish;
 using System.Text.RegularExpressions;
+using System;
 using QudUX.Utilities;
 
 namespace QudUX.Wishes

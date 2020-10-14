@@ -16,14 +16,14 @@ namespace XRL.UI
 		private static TextConsole Console;
 		private static ScreenBuffer Buffer;
 		public List<EnhancedScoreEntry> ScoreList;
-		private enum StatsScreen
+		private enum StatsPage
 		{
 			GamesList = 1,
 			LevelStats,
 			DeathStats,
 		} 
 
-		private StatsScreen currentScreen;
+		private StatsPage currentPage;
 		public void Init(TextConsole console, ScreenBuffer buffer)
 		{
 			Console = console;
@@ -31,7 +31,8 @@ namespace XRL.UI
 		}
 		public ScreenReturn Show(GameObject GO)
         {
-            currentScreen = StatsScreen.GamesList;
+			GameManager.Instance.PushGameView("QudUX:GameStats");
+            currentPage = StatsPage.GamesList;
 
             //Logger.Log("Loading scoreboard");
             Table scoreTable, levelsTable, deathCauseTable;
@@ -44,21 +45,21 @@ namespace XRL.UI
             {
                 DisplayScreenFrame();
                 Buffer.Goto(55, 0);
-                Buffer.Write(((int)currentScreen).ToString() + "/3");
+                Buffer.Write(((int)currentPage).ToString() + "/3");
 
                 Table currentTable = null;
-                if (currentScreen == StatsScreen.GamesList)
+                if (currentPage == StatsPage.GamesList)
                 {
                     scoreTable.Display(Buffer, 1, 1);
                     currentTable = scoreTable;
                 }
-                else if (currentScreen == StatsScreen.LevelStats)
+                else if (currentPage == StatsPage.LevelStats)
                 {
                     levelsTable.Display(Buffer, 1, 1);
                     currentTable = levelsTable;
 
                 }
-                else if (currentScreen == StatsScreen.DeathStats)
+                else if (currentPage == StatsPage.DeathStats)
                 {
                     deathCauseTable.Display(Buffer, 1, 1);
                     currentTable = deathCauseTable;
@@ -81,6 +82,14 @@ namespace XRL.UI
                     GameManager.Instance.PopGameView();
                     return ScreenReturn.Exit;
                 }
+
+				if ((keys == Keys.Enter) && (currentPage == StatsPage.GamesList))
+				{
+					EnhancedScoreEntry esh = ScoreList[scoreTable.Offset + scoreTable.SelectedIndex];
+					QudUX_GameDetailsScreen detailsScreen = new QudUX_GameDetailsScreen();
+					detailsScreen.GameDetails = esh.Details;
+					detailsScreen.Show(GO);
+				}
 
 				if (keys == Keys.OemQuestion)
 				{
@@ -118,30 +127,31 @@ namespace XRL.UI
 
                 if (keys == Keys.NumPad6)
                 {
-                    if (currentScreen == StatsScreen.DeathStats)
+                    if (currentPage == StatsPage.DeathStats)
                     {
-                        currentScreen = StatsScreen.GamesList;
+                        currentPage = StatsPage.GamesList;
                     }
                     else
                     {
-                        currentScreen++;
+                        currentPage++;
                     }
                 }
 
                 if (keys == Keys.NumPad4)
                 {
-                    if (currentScreen == StatsScreen.GamesList)
+                    if (currentPage == StatsPage.GamesList)
                     {
-                        currentScreen = StatsScreen.DeathStats;
+                        currentPage = StatsPage.DeathStats;
                     }
                     else
                     {
-                        currentScreen--;
+                        currentPage--;
                     }
                 }
 
             }
-        }
+			
+		}
 
 		private void ShowQuickKeys()
 		{
@@ -153,7 +163,7 @@ namespace XRL.UI
 				new Tuple<string,string>("9","Page Up"),
 				new Tuple<string,string>("3", "Page Down"),
 				new Tuple<string,string>("Ctrl+A", "Toggle abandoned game count"),
-
+				new Tuple<string,string>("Enter", "Show game details"),
 			};
 			var stxt = from s in qk select "&W" + s.Item1 + "&y - " + s.Item2;
 			string helptxt = string.Join("\r\n",stxt.ToArray());;
@@ -161,6 +171,7 @@ namespace XRL.UI
 			Popup.Show("Statistics quick keys\r\n\r\n" + helptxt);
 
 		}
+
         private void FillTables(out Table scoreTable, out Table levelsTable, out Table deathCauseTable, bool showAbandonned = true )
         {
             EnhancedScoreboard scoreboard = EnhancedScoreboard.Load();

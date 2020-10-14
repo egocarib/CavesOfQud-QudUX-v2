@@ -28,10 +28,12 @@ namespace XRL.UI
             {
                 Buffer.Clear();
                 Buffer.SingleBox();
-                Buffer.Title("Games statistics");
+                Buffer.Title("Game Detail");
                 Buffer.EscOr5ToExit();
+                Buffer.Goto(2, 24);
+                Buffer.Write("[{{W|8}}-Up {{W|2}}-Down {{W|9}}-Pg.Up {{W|3}}-Pg.Down]");
 
-                QudUXTextBlock tb = new QudUXTextBlock(10,10,15,10);
+                QudUXTextBlock tb = new QudUXTextBlock(1,1,78,23);
                 tb.DrawBorder = true;
                 tb.Text = GameDetails;
                 tb.Display(Buffer);
@@ -45,6 +47,27 @@ namespace XRL.UI
                     GameManager.Instance.PopGameView();
                     return ScreenReturn.Exit;
                 }
+
+                if (keys == Keys.NumPad3 || keys == Keys.Next)
+                {
+                    tb.ScrollPage(1);
+                }
+
+                if (keys == Keys.NumPad9 || keys == Keys.Prior)
+                {
+                    tb.ScrollPage(-1);
+                }
+
+                if (keys == Keys.NumPad2)
+                {
+                    tb.Scroll(1);
+                }
+
+                if (keys == Keys.NumPad8)
+                {
+                    tb.Scroll(-1);
+                }
+
 
             }
         }
