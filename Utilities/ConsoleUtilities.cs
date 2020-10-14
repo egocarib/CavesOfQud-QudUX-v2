@@ -56,7 +56,7 @@ namespace QudUX.Utilities
     {
         public string Text { get => text; set  {text = value; textLines = null;} }
         private int x, y, width, height;
-        private int offset = 0;
+        public int Offset = 0;
         public bool DrawBorder = false;
 
         private List<string> textLines;
@@ -74,12 +74,12 @@ namespace QudUX.Utilities
         {
             if (textLines == null) return;
 
-            offset += direction * lines;
-            if (offset < 0)
-                offset = 0;
+            Offset += direction * lines;
+            if (Offset < 0)
+                Offset = 0;
 
-            if (offset > textLines.Count - 1)
-                offset = textLines.Count - 1;
+            if (Offset > textLines.Count - 1)
+                Offset = textLines.Count - 1;
 
         }
         public void Scroll(int direction)
@@ -95,6 +95,7 @@ namespace QudUX.Utilities
         private void FillText(string text)
         {
             textLines = new List<string>();
+            Offset = 0;
             var lines = text.Split('\n');
             int border = 0;
             if (DrawBorder)
@@ -139,17 +140,15 @@ namespace QudUX.Utilities
                 curx++;
 
             }
-            int posTxt = textLines.Count - offset;
+            int posTxt = textLines.Count - Offset;
             int limit = Math.Min(posTxt, height - borderSize);
-            for (i = offset; i < offset + limit; i++)
+            for (i = Offset; i < Offset + limit; i++)
             {
                 string l = textLines[i];
                 buffer.Goto(curx, cury);
                 buffer.Write(l);
                 cury++;
             }
-
-
         }
     }
     public class Table

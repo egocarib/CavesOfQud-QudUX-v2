@@ -24,6 +24,10 @@ namespace XRL.UI
         public ScreenReturn Show(GameObject GO)
         {
             GameManager.Instance.PushGameView("QudUX:GameDetails");
+            QudUXTextBlock tb = new QudUXTextBlock(0,1,78,23);
+            tb.DrawBorder = true;
+            tb.Text = GameDetails;
+
             while (true)
             {
                 Buffer.Clear();
@@ -33,13 +37,6 @@ namespace XRL.UI
                 Buffer.Goto(2, 24);
                 Buffer.Write("[{{W|8}}-Up {{W|2}}-Down {{W|9}}-Pg.Up {{W|3}}-Pg.Down]");
 
-                QudUXTextBlock tb = new QudUXTextBlock(1,1,78,23);
-                tb.DrawBorder = true;
-                tb.Text = GameDetails;
-                tb.Display(Buffer);
-
-                Console.DrawBuffer(Buffer);
-
                 Keys keys = Keyboard.getvk(Options.MapDirectionsToKeypad);
 
                 if (keys == Keys.Escape || keys == Keys.NumPad5)
@@ -48,6 +45,7 @@ namespace XRL.UI
                     return ScreenReturn.Exit;
                 }
 
+                bool screenChange = false;
                 if (keys == Keys.NumPad3 || keys == Keys.Next)
                 {
                     tb.ScrollPage(1);
@@ -55,7 +53,7 @@ namespace XRL.UI
 
                 if (keys == Keys.NumPad9 || keys == Keys.Prior)
                 {
-                    tb.ScrollPage(-1);
+                    tb.ScrollPage(-1);                    
                 }
 
                 if (keys == Keys.NumPad2)
@@ -68,7 +66,9 @@ namespace XRL.UI
                     tb.Scroll(-1);
                 }
 
+                tb.Display(Buffer);
 
+                Console.DrawBuffer(Buffer);
             }
         }
     }
