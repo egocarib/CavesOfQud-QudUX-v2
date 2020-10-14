@@ -109,7 +109,7 @@ namespace XRL.UI
                         currentTable.MoveSelection(-1);
                     }
 
-					if (keys == (Keys)131137)
+					if (keys == (Keys.Control | Keys.A))
 					{
 						showAbandonned = !showAbandonned;
             			FillTables(out scoreTable, out levelsTable, out deathCauseTable, showAbandonned );
