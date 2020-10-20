@@ -37,6 +37,10 @@ namespace XRL.UI
                 Buffer.Goto(2, 24);
                 Buffer.Write("[{{W|8}}-Up {{W|2}}-Down {{W|9}}-Pg.Up {{W|3}}-Pg.Down]");
 
+                tb.Display(Buffer);
+
+                Console.DrawBuffer(Buffer);
+
                 Keys keys = Keyboard.getvk(Options.MapDirectionsToKeypad);
 
                 if (keys == Keys.Escape || keys == Keys.NumPad5)
@@ -66,9 +70,6 @@ namespace XRL.UI
                     tb.Scroll(-1);
                 }
 
-                tb.Display(Buffer);
-
-                Console.DrawBuffer(Buffer);
             }
         }
     }
