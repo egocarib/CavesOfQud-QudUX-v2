@@ -227,6 +227,10 @@ namespace QudUX.Utilities
             {
                 Offset += (direction * MaxVisibleRows);
             }
+            else if (direction == -1 && Offset > 0)
+            {
+                Offset = 0;
+            }
         }
 
         public void Scroll (int direction)
@@ -247,13 +251,16 @@ namespace QudUX.Utilities
 
             if (SelectedIndex + direction   < 0)
             {
-                SelectedIndex = CurrentVisibleRows - 1;
+                Scroll(-1);
                 return; 
             }
 
             if (SelectedIndex + direction >= CurrentVisibleRows)
             {
-                SelectedIndex = 0;
+                if (Offset + (direction * MaxVisibleRows) < rows.Count)
+                {
+                    Scroll(1);
+                }
                 return;
             }
         }
