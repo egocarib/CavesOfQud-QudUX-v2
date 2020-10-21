@@ -8,7 +8,7 @@ using QudUX.Utilities;
 
 namespace XRL.UI
 {
-	[UIView("QudUX:AutogetManagement", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: "QudUX:AutogetManagement")]
+	[UIView("QudUX:AutogetManagement", ForceFullscreen: true, NavCategory: "Menu,Nocancelescape", UICanvas: null)]
 	public class QudUX_AutogetManagementScreen : IScreen, IWantsTextConsoleInit
 	{
 		private static TextConsole Console;

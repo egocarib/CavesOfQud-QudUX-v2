@@ -216,6 +216,10 @@ namespace QudUX.Concepts
             {
                 get { return GetMethodInfo(() => LookExtender.CheckKeyPress(default(Keys), default(GameObject), default(bool))); }
             }
+            public static MethodInfo EnhancedScoreboardExtender_ShowGameStatsScreen
+            {
+                get { return GetMethodInfo(() => EnhancedScoreboardExtender.ShowGameStatsScreen()); }
+            }
             public static FieldInfo AbilityNode_Ability
             {
                 get { return typeof(AbilityNode).GetField("Ability"); }

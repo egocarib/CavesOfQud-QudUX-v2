@@ -36,6 +36,16 @@ namespace QudUX.HarmonyPatches
                 || i.opcode == OpCodes.Ldloc_S);
         }
 
+        public static bool IsStoreLocalInstruction(CodeInstruction i)
+        {
+            return (i.opcode == OpCodes.Stloc
+                || i.opcode == OpCodes.Stloc_0
+                || i.opcode == OpCodes.Stloc_1
+                || i.opcode == OpCodes.Stloc_2
+                || i.opcode == OpCodes.Stloc_3
+                || i.opcode == OpCodes.Stloc_S);
+        }
+
         public static class ILBlocks
         {
             private static readonly MethodInfo Method_Options_GetOption = typeof(XRL.UI.Options).GetMethod("GetOption");

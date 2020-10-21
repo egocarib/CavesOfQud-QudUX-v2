@@ -11,9 +11,18 @@ using XRL.Core;
 using ConsoleLib.Console;
 using System.Text.RegularExpressions;
 using QudUX.Utilities;
+using XRL.UI;
 
 namespace QudUX.ScreenExtenders
 {
+    public static class EnhancedScoreboardExtender
+    {
+        public static void ShowGameStatsScreen()
+        {
+            var GameStatsMenu = new QudUX_GameStatsScreen();
+            GameStatsMenu.Show(null);
+        }
+    }
 
     public class EnhancedScoreboard : Scoreboard
     {
