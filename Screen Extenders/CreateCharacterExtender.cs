@@ -3,6 +3,8 @@ using ConsoleLib.Console;
 using XRL.UI;
 using System;
 using QudUX.Utilities;
+using XRL.World.Parts;
+using XRL.World.Effects;
 
 namespace QudUX.ScreenExtenders
 {
@@ -38,6 +40,7 @@ namespace QudUX.ScreenExtenders
                 TargetObject = target;
 
                 //for other cases (such as opening a wish menu in game), the following applies changes immediately:
+                ApplyTileToEffects(target, tileInfo.Tile);
                 target.pRender.Tile = tileInfo.Tile;
                 target.pRender.DetailColor = tileInfo.DetailColor;
                 target.pRender.TileColor = $"&{tileInfo.ForegroundColor}";
@@ -55,6 +58,26 @@ namespace QudUX.ScreenExtenders
             catch (Exception ex)
             {
                 Utilities.Logger.Log($"(Error) Failed to apply custom tile to body [{ex}]");
+            }
+        }
+
+        public static void ApplyTileToEffects(GameObject target, string newTile)
+        {
+            //Sets the new tile to several effects that would otherwise override it.
+            if (target.HasPart(typeof(HologramMaterial)))
+            {
+                HologramMaterial part = target.GetPart<HologramMaterial>();
+                part.Tile = newTile;
+            }
+            if (target.HasPart(typeof(HologramMaterialPrimary)))
+            {
+                HologramMaterialPrimary part = target.GetPart<HologramMaterialPrimary>();
+                part.Tile = newTile;
+            }
+            if (target.HasEffect<Phased>())
+            {
+                Phased effect = target.GetEffect<Phased>();
+                effect.Tile = newTile;
             }
         }
 
