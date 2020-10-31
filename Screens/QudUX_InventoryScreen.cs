@@ -19,9 +19,9 @@ namespace XRL.UI
     public class QudUX_InventoryScreen : IScreen, IWantsTextConsoleInit
     {
         static Dictionary<char, GameObject> SelectionList = new Dictionary<char, GameObject>();
-        static Dictionary<char, CategorySelectionListEntry> CategorySelectionList = new Dictionary<char, CategorySelectionListEntry>();
+        static Dictionary<char, QudUX_CategorySelectionListEntry> CategorySelectionList = new Dictionary<char, QudUX_CategorySelectionListEntry>();
         static Dictionary<string, List<GameObject>> CategoryMap = new Dictionary<string, List<GameObject>>();
-        static Dictionary<string, InventoryCategory> CategoryList = new Dictionary<string,InventoryCategory>();
+        static Dictionary<string, QudUX_InventoryCategory> CategoryList = new Dictionary<string, QudUX_InventoryCategory>();
         static List<GameObject> SortList;
         static List<string> Categories = new List<string>();
         public static SortGODisplayName displayNameSorter = new SortGODisplayName();
@@ -30,7 +30,7 @@ namespace XRL.UI
         static int StartObject = 0;
         static int CategorySort = 0;
         static bool bMore = false;
-        static InventoryCategory forceCategorySelect = null;
+        static QudUX_InventoryCategory forceCategorySelect = null;
         public static readonly int InventoryListHeight = 20;
         public static int ItemsSkippedByFilter = 0;
         public static int nSelected = 0;
@@ -108,7 +108,7 @@ namespace XRL.UI
                     if (!CategoryList.ContainsKey(iCategory))
                     {
                         bool bExpandState = SavedInventoryState.GetExpandState(iCategory);
-                        CategoryList.Add(iCategory, new InventoryCategory(iCategory, bExpandState));
+                        CategoryList.Add(iCategory, new QudUX_InventoryCategory(iCategory, bExpandState));
                         Categories.Add(iCategory);
                     }
 
@@ -169,7 +169,7 @@ namespace XRL.UI
                 for (int n = 0; n < CatNames.Count; n++)
                 {
                     string sCat = CatNames[n];
-                    InventoryCategory Cat = CategoryList[sCat];
+                    QudUX_InventoryCategory Cat = CategoryList[sCat];
 
                     if (forceCategorySelect != null && Cat == forceCategorySelect)
                     {
@@ -184,7 +184,7 @@ namespace XRL.UI
 
                     if (nObject >= StartObject && nObject <= listHeightMinusOne + StartObject)
                     {
-                        CategorySelectionList.Add(c, new CategorySelectionListEntry(Cat));
+                        CategorySelectionList.Add(c, new QudUX_CategorySelectionListEntry(Cat));
                         c++;
                         nEntries++;
                     }
@@ -198,7 +198,7 @@ namespace XRL.UI
 
                             if (nObject >= StartObject && nObject <= listHeightMinusOne + StartObject)
                             {
-                                CategorySelectionList.Add(c, new CategorySelectionListEntry(Obj));
+                                CategorySelectionList.Add(c, new QudUX_CategorySelectionListEntry(Obj));
                                 c++;
                             }
                             else
@@ -360,7 +360,7 @@ namespace XRL.UI
 
                 int nObject = 0;
 
-                InventoryCategory CurrentCategory = null;
+                QudUX_InventoryCategory CurrentCategory = null;
                 GameObject CurrentObject = null;
 
                 int yStart = 3;
@@ -715,7 +715,7 @@ namespace XRL.UI
                 else
                 if (keys == Keys.Subtract || keys == Keys.OemMinus)
                 {
-                    foreach (InventoryCategory Cat in CategoryList.Values)
+                    foreach (QudUX_InventoryCategory Cat in CategoryList.Values)
                     {
                         Cat.Expanded = false;
                         SavedInventoryState.SetExpandState(Cat.Name, false);
@@ -723,7 +723,7 @@ namespace XRL.UI
                 }
                 else if (keys == Keys.Add || keys == Keys.Oemplus)
                 {
-                    foreach (InventoryCategory Cat in CategoryList.Values)
+                    foreach (QudUX_InventoryCategory Cat in CategoryList.Values)
                     {
                         Cat.Expanded = true;
                         SavedInventoryState.SetExpandState(Cat.Name, true);
@@ -895,4 +895,43 @@ namespace XRL.UI
 
     }
 
+    /// <summary>
+    /// Modeled after the base game's InventoryCategory class in 2.0.201 and earlier.
+    /// </summary>
+    public class QudUX_InventoryCategory
+    {
+        public string Name = "";
+
+        public bool Expanded;
+
+        public int Weight;
+
+        public int Items;
+
+        public QudUX_InventoryCategory(string Name, bool Expanded)
+        {
+            this.Name = Name;
+            this.Expanded = Expanded;
+        }
+    }
+
+    /// <summary>
+    /// Modeled after the base game's CategorySelectionListEntry class, modified to accept QudUX_InventoryCategory
+    /// </summary>
+    public class QudUX_CategorySelectionListEntry
+    {
+        public QudUX_InventoryCategory Category;
+
+        public GameObject Object;
+
+        public QudUX_CategorySelectionListEntry(QudUX_InventoryCategory Cat)
+        {
+            Category = Cat;
+        }
+
+        public QudUX_CategorySelectionListEntry(GameObject GO)
+        {
+            Object = GO;
+        }
+    }
 }
