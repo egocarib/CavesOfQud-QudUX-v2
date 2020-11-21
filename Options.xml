@@ -16,7 +16,6 @@
   <option ID="QudUX_OptionAbilityDescriptions" DisplayText="Add descriptions and cooldown info to activated ability screen" Category="QudUX" Type="Checkbox" Default="Yes"></option>
   <option ID="QudUX_OptionParticleText" DisplayText="Show animated text to indicate when movement was prevented" Category="QudUX" Type="Checkbox" Default="Yes"></option>
   <option ID="QudUX_OptionRenameRuins" DisplayText="Force all ruins to have unique names (requires restart and new game)" Category="QudUX" Type="Checkbox" Default="Yes"></option>
-  <option ID="QudUX_OptionReplaceArrowSprite" DisplayText="Use alternate sprite for arrows" Category="QudUX" Type="Checkbox" Default="Yes"></option>
   <option ID="QudUX_OptionDisableMagnets" DisplayText="Prevent pulsed field magnets from pulling away inventory items" Category="QudUX" Type="Checkbox" Default="No"></option>
 
 </options>

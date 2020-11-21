@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <objects>
-
-  <!-- Alternate arrow sprites -->
-  <object Name="Wooden Arrow" Load="Merge">
-    <part Name="QudUX_ArrowSpriteExchanger" ReplacementColorString="&amp;y" ReplacementDetailColor="w" ReplacementTile="QudUX/arrow.png" />
-  </object>
-  <object Name="Steel Arrow" Load="Merge">
-    <part Name="QudUX_ArrowSpriteExchanger" ReplacementColorString="&amp;Y" ReplacementDetailColor="w" ReplacementTile="QudUX/arrow.png" />
-  </object>
-  <object Name="Boomrose Arrow" Load="Merge">
-    <part Name="QudUX_ArrowSpriteExchanger" ReplacementColorString="&amp;R" ReplacementDetailColor="w" ReplacementTile="QudUX/arrow.png" />
-  </object>
   
   <!-- Sultan statues mockups - used only to dynamically populate these tiles into the character sprite selector -->
   <object Name="MockSultanStatue" Inherits="Statue">

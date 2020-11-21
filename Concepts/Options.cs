@@ -29,7 +29,6 @@ namespace QudUX.Concepts
             public static bool ParticleText => GetOption("QudUX_OptionParticleText").EqualsNoCase("Yes");
             public static bool RenameRuins => GetOption("QudUX_OptionRenameRuins").EqualsNoCase("Yes");
             public static bool TrackLocations => GetOption("QudUX_OptionTrackLocations").EqualsNoCase("Yes");
-            public static bool UseArrowSprite => GetOption("QudUX_OptionReplaceArrowSprite").EqualsNoCase("Yes");
             public static bool DisableMagnets => GetOption("QudUX_OptionDisableMagnets").EqualsNoCase("Yes");
             public static class OptionStrings
             {
