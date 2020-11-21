@@ -49,7 +49,6 @@ namespace XRL.UI
                     return ScreenReturn.Exit;
                 }
 
-                bool screenChange = false;
                 if (keys == Keys.NumPad3 || keys == Keys.Next)
                 {
                     tb.ScrollPage(1);
