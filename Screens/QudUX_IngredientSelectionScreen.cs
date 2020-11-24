@@ -120,7 +120,7 @@ namespace XRL.UI
 			List<GameObject> validCookingIngredients = Campfire.GetValidCookingIngredients();
 			foreach (GameObject thing in validCookingIngredients)
 			{
-				LiquidVolume lv = thing.GetPart<LiquidVolume>();
+				LiquidVolume lv = thing.LiquidVolume;
 				if (lv != null)
 				{
 					string liquidName = lv.GetLiquidDescription(false);
@@ -149,7 +149,7 @@ namespace XRL.UI
 			{
 				IngredientScreenInfo info = new IngredientScreenInfo(selections, index);
 				PreparedCookingIngredient ingPart = ing?.GetPart<PreparedCookingIngredient>();
-				LiquidVolume liquid = ing?.GetPart<LiquidVolume>();
+				LiquidVolume liquid = ing?.LiquidVolume;
 				string liquidDescription = string.Empty;
 
 				//simple ingredient name

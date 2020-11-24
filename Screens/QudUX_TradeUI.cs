@@ -319,7 +319,7 @@ namespace XRL.UI.QudUX_DummyTradeNamespace
             }
             if (costMultiple > 0 && obj.HasPropertyOrTag("WaterContainer"))
             {
-                LiquidVolume LV = obj.GetPart("LiquidVolume") as LiquidVolume;
+                LiquidVolume LV = obj.LiquidVolume;
                 if (LV != null && LV.IsFreshWater() && !obj.HasPart("TinkerItem"))
                 {
                     return false;
