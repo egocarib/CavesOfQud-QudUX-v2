@@ -100,7 +100,7 @@ namespace XRL.UI
 			while (!shouldExitMenu)
 			{
 				ScrapBuffer.Clear();
-				Event.ResetPool();
+				//Event.ResetPool();  // Can't call this here because there are active event pool lists in use by the enclosing Campfire code
 				CookingRecipe selectedRecipe = recipeList[selectedRecipeIndex].Item2;
 
 				//TODO: HANDLE 0 RECIPES (because user deleted them all)

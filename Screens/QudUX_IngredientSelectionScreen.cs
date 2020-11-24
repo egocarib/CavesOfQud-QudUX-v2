@@ -272,7 +272,7 @@ namespace XRL.UI
 			while (!shouldExitMenu)
 			{
 				ScrapBuffer.Clear();
-				Event.ResetPool();
+				//Event.ResetPool();  // Can't call this here because there are active event pool lists in use by the enclosing Campfire code
 				int selectedIngredientCount = ingredientOptions.Where(io => io.IsSelected == true).Count();
 
 				//Draw main box
