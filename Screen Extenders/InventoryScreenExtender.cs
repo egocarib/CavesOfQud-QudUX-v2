@@ -192,7 +192,7 @@ namespace QudUX.ScreenExtenders
             }
         }
 
-        public static string GetItemValueString(GameObject item, bool shouldHighlight = false)
+        public static string GetItemValueString(GameObject item, GameObject fakeTraderForPriceEval, bool shouldHighlight = false)
         {
             string valueString;
             int weight = (item.pPhysics != null) ? item.pPhysics.Weight : 0;
@@ -209,7 +209,7 @@ namespace QudUX.ScreenExtenders
             }
             else
             {
-                double itemValue = GetItemPricePer(item) * (double)item.Count;
+                double itemValue = GetItemPricePer(item, fakeTraderForPriceEval) * (double)item.Count;
                 double perPoundValue = itemValue / (double)weight;
                 int finalValue = (int)Math.Round(perPoundValue, MidpointRounding.AwayFromZero);
                 if (shouldHighlight)
@@ -224,45 +224,19 @@ namespace QudUX.ScreenExtenders
             return valueString;
         }
 
-        public static double GetItemPricePer(GameObject item)
+        public static double GetItemPricePer(GameObject item, GameObject fakeTraderForPriceEval)
         {
-            return item.ValueEach * AdjustedCopyOf_TradeUI_GetMultiplier(item);
+            return item.ValueEach * AdjustedCopyOf_TradeUI_GetMultiplier(item, fakeTraderForPriceEval);
         }
 
-        public static float AdjustedCopyOf_TradeUI_GetMultiplier(GameObject item)
+        public static float AdjustedCopyOf_TradeUI_GetMultiplier(GameObject item, GameObject fakeTraderForPriceEval)
         {
             if (item != null && item.GetIntProperty("Currency") != 0)
             {
                 return 1f;
             }
-            GameObject body = XRLCore.Core.Game.Player.Body;
-            if (!body.Statistics.ContainsKey("Ego"))
-            {
-                return 0.25f;
-            }
-            float num = body.StatMod("Ego");
-            if (body.HasPart("Persuasion_SnakeOiler"))
-            {
-                num += 2f;
-            }
-            if (body.HasEffect("Glotrot"))
-            {
-                num = -3f;
-            }
-            float num2 = 0.35f + 0.07f * num;
-            if (body.HasPart("SociallyRepugnant"))
-            {
-                num2 /= 5f;
-            }
-            if (num2 > 0.95f)
-            {
-                num2 = 0.95f;
-            }
-            else if (num2 < 0.05f)
-            {
-                num2 = 0.05f;
-            }
-            return num2;
+            double performance = GetTradePerformanceEvent.GetFor(IComponent<GameObject>.ThePlayer, fakeTraderForPriceEval);
+            return (float)performance;
         }
     }
 }

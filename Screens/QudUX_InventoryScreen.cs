@@ -310,6 +310,7 @@ namespace XRL.UI
             Dictionary<char, int> ItemMap = new Dictionary<char, int>();
             bool bShowInventoryTiles = QudUX.Concepts.Options.UI.ViewInventoryTiles;
             List<GameObject> disabledObjectsWithImposters = null;
+            GameObject fakeTraderForPriceEval = GameObject.create("DromadTrader1");
 
             if (bShowInventoryTiles)
             {
@@ -492,7 +493,7 @@ namespace XRL.UI
                         }
                         else
                         {
-                            string valuePerPound = InventoryScreenExtender.GetItemValueString(CategorySelectionList[keychar].Object, shouldHighlight);
+                            string valuePerPound = InventoryScreenExtender.GetItemValueString(CategorySelectionList[keychar].Object, fakeTraderForPriceEval, shouldHighlight);
                             detailString.Append(valuePerPound);
                         }
                         detailString.Append((char)179); //right box border segment in case item name overflowed the screen
@@ -577,6 +578,7 @@ namespace XRL.UI
                     {
                         ImposterUtilities.RestoreImposters(disabledObjectsWithImposters);
                     }
+                    fakeTraderForPriceEval.Obliterate();
                     GameManager.Instance.PopGameView();
                     return ScreenReturn.Exit;
                 }
@@ -878,6 +880,7 @@ namespace XRL.UI
             {
                 ImposterUtilities.RestoreImposters(disabledObjectsWithImposters);
             }
+            fakeTraderForPriceEval.Obliterate();
 
             if (keys == Keys.NumPad7)
             {

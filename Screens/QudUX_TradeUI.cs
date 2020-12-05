@@ -247,6 +247,7 @@ namespace XRL.UI.QudUX_DummyTradeNamespace
 
         public static TextConsole _TextConsole;
         public static ScreenBuffer _ScreenBuffer;
+        public static double Performance = 1.0;
 
         void IWantsTextConsoleInit.Init(TextConsole console, ScreenBuffer buffer)
         {
@@ -258,45 +259,15 @@ namespace XRL.UI.QudUX_DummyTradeNamespace
 
         public static bool AssumeTradersHaveWater = true;
 
-        public static float GetMultiplier(GameObject GO)
+        public static double GetMultiplier(GameObject GO)
         {
-            if (_Trader == null)
+
+            if (GO == null || !GO.IsCurrency)
             {
-                return 1;
+                return Performance;
             }
-            if (GO != null && GO.GetIntProperty("Currency") != 0)
-            {
-                return 1;
-            }
-            GameObject ThePlayer = XRL.Core.XRLCore.Core.Game.Player.Body;
-            if (!ThePlayer.Statistics.ContainsKey("Ego"))
-            {
-                return 0.25f;
-            }
-            float nModifier = (float)ThePlayer.StatMod("Ego");
-            if (ThePlayer.HasPart("Persuasion_SnakeOiler"))
-            {
-                nModifier += 2;
-            }
-            if (ThePlayer.HasEffect("Glotrot"))
-            {
-                nModifier = -3;
-            }
-            float Multiplier = (0.35f + (0.070f * nModifier));
-            if (ThePlayer.HasPart("SociallyRepugnant"))
-            {
-                Multiplier /= 5;
-            }
-            if (Multiplier > 0.95f)
-            {
-                Multiplier = 0.95f;
-            }
-            else
-            if (Multiplier < 0.05f)
-            {
-                Multiplier = 0.05f;
-            }
-            return Multiplier;
+            return 1.0;
+
         }
 
         public static bool ValidForTrade(GameObject obj, GameObject Trader, GameObject Other = null, TradeScreenMode ScreenMode = TradeScreenMode.Trade, float costMultiple = 1f)
@@ -514,14 +485,14 @@ namespace XRL.UI.QudUX_DummyTradeNamespace
         {
             for (int sideSelected = 0; sideSelected <= 1; sideSelected++)
             {
-                float nMultiplier = 1.0f;
+                double nMultiplier = 1.0f;
                 if (sideSelected == 0)
                 {
-                    nMultiplier = 1 / GetMultiplier(null);
+                    nMultiplier = 1.0 / Performance;
                 }
                 if (sideSelected == 1)
                 {
-                    nMultiplier = GetMultiplier(null);
+                    nMultiplier = Performance;
                 }
                 Totals[sideSelected] = 0;
                 Weight[sideSelected] = 0;
@@ -592,6 +563,7 @@ namespace XRL.UI.QudUX_DummyTradeNamespace
             }
             _Trader = Trader;
 
+            Performance = GetTradePerformanceEvent.GetFor(IComponent<GameObject>.ThePlayer, _Trader);
             SideSelected = 0;
             RowSelect = 0;
 
