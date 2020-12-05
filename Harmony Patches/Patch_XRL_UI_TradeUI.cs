@@ -41,6 +41,10 @@ namespace QudUX.HarmonyPatches
             {
                 return true; //user has disabled this feature
             }
+            if (GameOptions.SifrahHaggling)
+            {
+                return true; //not currently compatible with chaos's sifrah haggling stuff (would require some work incorporate all of chaos's changes)
+            }
             QudUXTradeUI.ShowTradeScreen(Trader, _costMultiple, (QudUXTradeUI.TradeScreenMode)screenMode);
             return false; //skip the original function
         }
