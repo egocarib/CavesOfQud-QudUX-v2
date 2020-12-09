@@ -59,7 +59,7 @@ namespace QudUX.Concepts
                 {
                     Type t = typeof(GameObject).Assembly.GetType("Kobold.SpriteManager");
                     FieldInfo infoMapField = t.GetField("InfoMap", BindingFlags.Static | BindingFlags.NonPublic);
-                    return infoMapField.GetValue(null) as Dictionary<string, exTextureInfo>;
+                    _SpriteManagerInfoMap = infoMapField.GetValue(null) as Dictionary<string, exTextureInfo>;
                 }
                 return _SpriteManagerInfoMap;
             }
