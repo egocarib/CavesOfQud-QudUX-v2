@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using XRL;
@@ -8,6 +9,7 @@ using XRL.World.Parts;
 using ConsoleLib.Console;
 using QudUX.Utilities;
 using static QudUX.Utilities.Logger;
+using QudUX.Concepts;
 
 namespace QudUX.ScreenExtenders
 {
@@ -418,6 +420,11 @@ namespace QudUX.ScreenExtenders
             Tiles[SelectedTileIndex].ForegroundColorIndex += amount;
         }
 
+        public void Flip()
+        {
+            Tiles[SelectedTileIndex].Flip();
+        }
+
         public void MoveSelection(Keys key)
         {
             Coords curCoords = Tiles[SelectedTileIndex].DrawCoords;
@@ -493,7 +500,20 @@ namespace QudUX.ScreenExtenders
             public int ForegroundColorIndex;
             public string DisplayName;
             public string BlueprintPath;
-            public readonly string Tile;
+            public bool IsFlipped;
+            public readonly string _Tile;
+            public readonly string _FlippedTile;
+            public string Tile
+            {
+                get
+                {
+                    if (!IsFlipped)
+                    {
+                        return _Tile;
+                    }
+                    return _FlippedTile;
+                }
+            }
             public string DetailColor
             {
                 get
@@ -527,11 +547,17 @@ namespace QudUX.ScreenExtenders
 
             public TileMetadata(string tile, string detailColor, string foregroundColor, string displayName, string blueprintPath)
             {
-                Tile = tile;
+                _Tile = tile;
+                _FlippedTile = $"{Path.ChangeExtension(_Tile, null)}{Constants.FlippedTileSuffix}";
                 DetailColorIndex = ColorList.FindIndex(c => c == detailColor);
                 ForegroundColorIndex = ColorList.FindIndex(c => c == foregroundColor);
                 DisplayName = displayName;
                 BlueprintPath = blueprintPath;
+            }
+
+            public void Flip()
+            {
+                IsFlipped = !IsFlipped;
             }
         }
     }

@@ -182,6 +182,10 @@ namespace XRL.UI
                         Buffer.Write(39, 24, "<{{W|7}}/{{W|9}} Primary color>");
                     }
                     Buffer.Write(60, 24, "<{{W|+}}/{{W|-}} Detail color>");
+                    if (screenMode == ScreenMode.ExtendedTiles)
+                    {
+                        Buffer.Write(70, 21, "<{{W|f}} Flip>");
+                    }
                 }
 
                 Console.DrawBuffer(Buffer);
@@ -316,6 +320,10 @@ namespace XRL.UI
                             Popup.Show("You can't modify your primary color because you have Photosynthetic Skin.", LogMessage: false);
                         }
                     }
+                }
+                if (keys == Keys.F)
+                {
+                    currentTiler.Flip();
                 }
                 if (keys == Keys.Oemcomma || keyChar == ',' || keys == (Keys.Control | Keys.F))
                 {

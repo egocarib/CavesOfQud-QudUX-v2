@@ -14,10 +14,10 @@ using QudUX.Utilities;
 using static HarmonyLib.SymbolExtensions;
 using static HarmonyLib.AccessTools;
 using System.IO;
-using System.Linq;
 
 namespace QudUX.Concepts
 {
+    [HasModSensitiveStaticCache]
     public static class Constants
     {
         public static string AbilityDataFileName => "QudUX_AbilityData.xml";
@@ -25,6 +25,8 @@ namespace QudUX.Concepts
         public static string AutogetDataFileName => "QudUX_AutogetSettings.json";
 
         public static string AutogetDataFilePath => Path.Combine(ModDirectory, AutogetDataFileName);
+
+        public static string FlippedTileSuffix => "_qudux_flipped.png";
 
         private static string _modDirectory = null;
         public static string ModDirectory
@@ -43,6 +45,23 @@ namespace QudUX.Concepts
                     });
                 }
                 return _modDirectory;
+            }
+        }
+
+        [ModSensitiveStaticCache(false)]
+        private static Dictionary<string, exTextureInfo> _SpriteManagerInfoMap;
+
+        public static Dictionary<string, exTextureInfo> SpriteManagerInfoMap
+        {
+            get
+            {
+                if (_SpriteManagerInfoMap == null)
+                {
+                    Type t = typeof(GameObject).Assembly.GetType("Kobold.SpriteManager");
+                    FieldInfo infoMapField = t.GetField("InfoMap", BindingFlags.Static | BindingFlags.NonPublic);
+                    return infoMapField.GetValue(null) as Dictionary<string, exTextureInfo>;
+                }
+                return _SpriteManagerInfoMap;
             }
         }
 

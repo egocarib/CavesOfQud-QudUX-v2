@@ -6,6 +6,7 @@ using XRL.Wish;
 using XRL.World;
 using XRL.World.Parts;
 using XRL.World.Effects;
+using QudUX.Utilities;
 
 namespace QudUX.Wishes
 {
@@ -52,6 +53,7 @@ namespace QudUX.Wishes
                                 {
                                     thing.RemoveEffect(typeof(QudUX_QuestGiverVision));
                                 }
+                                TextureMaker.UnflipGameObjectTexture(thing);
                             }
                         }
                     }
