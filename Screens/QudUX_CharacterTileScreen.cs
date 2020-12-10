@@ -120,7 +120,7 @@ namespace XRL.UI
                         Buffer.Write(49, 2, "{{W|,}} or {{W|Ctrl+F}} to change query");
                         if (!string.IsNullOrEmpty(filter))
                         {
-                            if (filterTiler == null || filterTiler.CurrentQuery != filter)
+                            if (filterTiler == null || !filterTiler.CurrentQueryEquals(filter))
                             {
                                 Buffer.Write(35, 10, "Loading...");
                                 Console.DrawBuffer(Buffer);

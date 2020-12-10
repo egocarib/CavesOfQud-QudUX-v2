@@ -63,6 +63,11 @@ namespace QudUX.ScreenExtenders
             return querystring.Trim().ToLower();
         }
 
+        public bool CurrentQueryEquals(string queryToCheck)
+        {
+            return CurrentQuery == NormalizeQuerystring(queryToCheck);
+        }
+
         public void SetDefaultColors(GameObject targetBody)
         {
             //determine foreground color for tiles ('y' unless player has Photosynthetic skin, then 'g')
