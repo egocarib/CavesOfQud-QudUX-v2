@@ -149,6 +149,31 @@ namespace QudUX.Utilities
             return null;
         }
 
+        public static void FlipGameObjectTexture(XRL.World.GameObject obj, bool unflipIfAlreadyFlipped = true)
+        {
+            if (obj.pRender?.Tile == null)
+            {
+                return;
+            }
+            if (obj.pRender.Tile.EndsWith(Constants.FlippedTileSuffix))
+            {
+                if (unflipIfAlreadyFlipped)
+                {
+                    UnflipGameObjectTexture(obj);
+                }
+                return;
+            }
+            string sourcePath = obj.pRender.Tile;
+            string flippedPath = $"{System.IO.Path.ChangeExtension(sourcePath, null)}{Constants.FlippedTileSuffix}";
+            GameManager.Instance.uiQueue.queueSingletonTask("QudUX Texture Flip", delegate
+            {
+                if (MakeFlippedTexture(flippedPath, out _))
+                {
+                    obj.pRender.Tile = flippedPath;
+                }
+            });
+        }
+
         public static void UnflipGameObjectTexture(XRL.World.GameObject obj)
         {
             if (obj.pRender?.Tile != null && obj.pRender.Tile.EndsWith(Constants.FlippedTileSuffix))
