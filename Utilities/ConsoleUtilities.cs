@@ -1,12 +1,146 @@
-﻿
-using ConsoleLib.Console;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System;
+using System.Reflection;
+using System.Collections.Generic;
+using Color = UnityEngine.Color;
+using ConsoleLib.Console;
 using XRL.UI;
 
 namespace QudUX.Utilities
 {
+    /// <summary>
+    /// Temporary collection of reflected fields and methods that will allow QudUX to support both
+    /// stable branch and beta branch. Beta branch has undergone a "large internal refactor to ConsoleChar"
+    /// This will be removed eventually and simplified after beta merges into stable.
+    /// </summary>
+    public static class ConsoleCharShim
+    {
+        private static MethodInfo _mClearTileLayers = null;
+        private static MethodInfo mClearTileLayers
+        {
+            get
+            {
+                if (_mClearTileLayers == null)
+                {
+                    _mClearTileLayers = typeof(ConsoleChar).GetMethod("ClearTileLayers");
+                    if (_mClearTileLayers == null)
+                    {
+                        _mClearTileLayers = typeof(ConsoleChar).GetMethod("Clear");
+                    }
+                    if (_mClearTileLayers == null)
+                    {
+                        throw new Exception("QudUX Error: Couldn't resolve ClearTileLayers method with reflection.");
+                    }
+                }
+                return _mClearTileLayers;
+            }
+        }
+
+        private static FieldInfo _fTileBackground = null;
+        private static bool bBackgroundIsArray = true;
+        private static FieldInfo fTileBackground
+        {
+            get
+            {
+                if (_fTileBackground == null)
+                {
+                    _fTileBackground = typeof(ConsoleChar).GetField("TileLayerBackground");
+                    if (_fTileBackground == null)
+                    {
+                        _fTileBackground = typeof(ConsoleChar).GetField("_TileBackground");
+                        bBackgroundIsArray = false;
+                    }
+                    if (_fTileBackground == null)
+                    {
+                        throw new Exception("QudUX Error: Couldn't resolve TileLayerBackground field with reflection.");
+                    }
+                }
+                return _fTileBackground;
+            }
+        }
+
+        private static FieldInfo _fTileForeground = null;
+        private static bool bForegroundIsArray = true;
+        private static FieldInfo fTileForeground
+        {
+            get
+            {
+                if (_fTileForeground == null)
+                {
+                    _fTileForeground = typeof(ConsoleChar).GetField("TileLayerForeground");
+                    if (_fTileForeground == null)
+                    {
+                        _fTileForeground = typeof(ConsoleChar).GetField("_TileForeground");
+                        bForegroundIsArray = false;
+                    }
+                    if (_fTileForeground == null)
+                    {
+                        throw new Exception("QudUX Error: Couldn't resolve TileLayerForeground field with reflection.");
+                    }
+                }
+                return _fTileForeground;
+            }
+        }
+
+        public static void ClearTileLayersShim(this ConsoleChar consoleChar)
+        {
+            mClearTileLayers.Invoke(consoleChar, null);
+        }
+
+        public static void SetTileBackgroundShim(this ConsoleChar consoleChar, Color color)
+        {
+            FieldInfo tileLayerBackgroundField = fTileBackground;
+            if (bBackgroundIsArray)
+            {
+                Color[] tileLayerBackground = (Color[])tileLayerBackgroundField.GetValue(consoleChar);
+                tileLayerBackground[0] = color;
+            }
+            else
+            {
+                tileLayerBackgroundField.SetValue(consoleChar, color);
+            }
+        }
+
+        public static void SetTileForegroundShim(this ConsoleChar consoleChar, Color color)
+        {
+            FieldInfo tileLayerForegroundField = fTileForeground;
+            if (bForegroundIsArray)
+            {
+                Color[] tileLayerForeground = (Color[])tileLayerForegroundField.GetValue(consoleChar);
+                tileLayerForeground[0] = color;
+            }
+            else
+            {
+                tileLayerForegroundField.SetValue(consoleChar, color);
+            }
+        }
+
+        public static bool HasTileBackgroundEqualToShim(this ConsoleChar consoleChar, Color color)
+        {
+            object fieldObj = fTileBackground.GetValue(consoleChar);
+            if (bBackgroundIsArray)
+            {
+                return ((Color[])fieldObj)[0] == color;
+            }
+            else
+            {
+                return ((Color)fieldObj) == color;
+            }
+        }
+
+        public static bool HasTileForegroundEqualToShim(this ConsoleChar consoleChar, Color color)
+        {
+            object fieldObj = fTileForeground.GetValue(consoleChar);
+            if (bForegroundIsArray)
+            {
+                return ((Color[])fieldObj)[0] == color;
+            }
+            else
+            {
+                return ((Color)fieldObj) == color;
+            }
+        }
+    }
 
     public class QudUXBorder
     {

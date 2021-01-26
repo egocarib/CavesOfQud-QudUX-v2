@@ -69,13 +69,13 @@ namespace QudUX.Utilities
             scrapBuffer[x, y].Attributes = (darken ? GetDarkenedAttributes() : this.Attributes);
             if (!string.IsNullOrEmpty(this.Tile))
             {
-                scrapBuffer[x, y].TileLayerBackground[0] = (darken ? GetDarkenedForeground() : this.DetailColor);
-                scrapBuffer[x, y].TileLayerForeground[0] = (darken ? GetDarkenedForeground() : this.ForegroundColor);
+                scrapBuffer[x, y].SetTileBackgroundShim( (darken ? GetDarkenedForeground() : this.DetailColor) );
+                scrapBuffer[x, y].SetTileForegroundShim( (darken ? GetDarkenedForeground() : this.ForegroundColor) );
                 scrapBuffer[x, y].Tile = this.Tile;
             }
             else if (!string.IsNullOrEmpty(this.RenderString))
             {
-                scrapBuffer[x, y].ClearTileLayers();
+                scrapBuffer[x, y].ClearTileLayersShim();
                 scrapBuffer[x, y].Char = this.RenderString[0];
             }
             else
@@ -98,8 +98,8 @@ namespace QudUX.Utilities
                 && screenChar.Attributes == this.Attributes
                 && ((!string.IsNullOrEmpty(this.Tile)
                         && screenChar.Tile == this.Tile
-                        && screenChar.TileLayerBackground[0] == this.DetailColor
-                        && screenChar.TileLayerForeground[0] == this.ForegroundColor)
+                        && screenChar.HasTileBackgroundEqualToShim( this.DetailColor )
+                        && screenChar.HasTileForegroundEqualToShim( this.ForegroundColor ))
                     || (!string.IsNullOrEmpty(this.RenderString)
                         && screenChar.Char == this.RenderString[0]));
             return tileApplied;
