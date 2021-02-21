@@ -164,7 +164,7 @@ namespace QudUX.Concepts
             }
             public static MethodInfo IComponent_GameObject_AddPlayerMessage
             {
-                get { return typeof(IComponent<GameObject>).GetMethod("AddPlayerMessage", new Type[] { typeof(string) }); }
+                get { return typeof(IComponent<GameObject>).GetMethod("AddPlayerMessage", new Type[] { typeof(string), typeof(string), typeof(bool) }); }
             }
             public static MethodInfo Cell_HasBridge
             {
