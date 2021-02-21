@@ -17,7 +17,7 @@ namespace QudUX.HarmonyPatches
             var Sequence = new PatchTargetInstructionSet(new List<PatchTargetInstruction>
             {
                 new PatchTargetInstruction(OpCodes.Ldstr, "You cannot go that way."),
-                new PatchTargetInstruction(OpCodes.Call, MessageQueue_AddPlayerMessage, 0)
+                new PatchTargetInstruction(OpCodes.Call, MessageQueue_AddPlayerMessage, 2)
             });
 
             bool patched = false;

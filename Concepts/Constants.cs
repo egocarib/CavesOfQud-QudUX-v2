@@ -144,7 +144,7 @@ namespace QudUX.Concepts
             }
             public static MethodInfo MessageQueue_AddPlayerMessage
             {
-                get { return typeof(MessageQueue).GetMethod("AddPlayerMessage", new Type[] { typeof(string) }); }
+                get { return typeof(MessageQueue).GetMethod("AddPlayerMessage", new Type[] { typeof(string), typeof(string), typeof(bool) }); }
             }
             public static MethodInfo ParticleTextMaker_EmitFromPlayer
             {
