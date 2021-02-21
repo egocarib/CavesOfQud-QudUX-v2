@@ -24,9 +24,10 @@ Features
 - Collapse sections in the text console UI trade screen [`PNG preview`](https://i.imgur.com/MPz3nHH.png)
 - See ability descriptions and willpower-adjusted cooldown details for **all** activated abilities on the abilities screen [`GIF preview`](https://i.imgur.com/qdwLXIU.gif)
 - Disable auto-pickup for specific items through item interaction menu, such as ape pelts or HE Missiles [`PNG preview`](https://i.imgur.com/eo9ZwF2.png)
+- Review game statistics in a revamped GameStats menu.
 - Get particle text indicators when you're blocked at a zone border or when you've paused before entering deep/dangerous liquids [`GIF preview`](https://i.imgur.com/7jHm9N7.gif)
-- Enjoy a unique, dedicated sprite for arrows [`PNG preview`](https://i.imgur.com/9XGyjFZ.png)
-  - This is a temporary feature until a sprite is added to the base game
+- ~~Enjoy a unique, dedicated sprite for arrows [`PNG preview`](https://i.imgur.com/9XGyjFZ.png)~~
+  - (Feature removed because an arrow sprite was added to the base game)
 - Optionally, prevent pulsed field magnets from ripping your items away. This option is off by default.
 
 Install
