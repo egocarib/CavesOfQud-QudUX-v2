@@ -8,140 +8,6 @@ using XRL.UI;
 
 namespace QudUX.Utilities
 {
-    /// <summary>
-    /// Temporary collection of reflected fields and methods that will allow QudUX to support both
-    /// stable branch and beta branch. Beta branch has undergone a "large internal refactor to ConsoleChar"
-    /// This will be removed eventually and simplified after beta merges into stable.
-    /// </summary>
-    public static class ConsoleCharShim
-    {
-        private static MethodInfo _mClearTileLayers = null;
-        private static MethodInfo mClearTileLayers
-        {
-            get
-            {
-                if (_mClearTileLayers == null)
-                {
-                    _mClearTileLayers = typeof(ConsoleChar).GetMethod("ClearTileLayers");
-                    if (_mClearTileLayers == null)
-                    {
-                        _mClearTileLayers = typeof(ConsoleChar).GetMethod("Clear");
-                    }
-                    if (_mClearTileLayers == null)
-                    {
-                        throw new Exception("QudUX Error: Couldn't resolve ClearTileLayers method with reflection.");
-                    }
-                }
-                return _mClearTileLayers;
-            }
-        }
-
-        private static FieldInfo _fTileBackground = null;
-        private static bool bBackgroundIsArray = true;
-        private static FieldInfo fTileBackground
-        {
-            get
-            {
-                if (_fTileBackground == null)
-                {
-                    _fTileBackground = typeof(ConsoleChar).GetField("TileLayerBackground");
-                    if (_fTileBackground == null)
-                    {
-                        _fTileBackground = typeof(ConsoleChar).GetField("_TileBackground");
-                        bBackgroundIsArray = false;
-                    }
-                    if (_fTileBackground == null)
-                    {
-                        throw new Exception("QudUX Error: Couldn't resolve TileLayerBackground field with reflection.");
-                    }
-                }
-                return _fTileBackground;
-            }
-        }
-
-        private static FieldInfo _fTileForeground = null;
-        private static bool bForegroundIsArray = true;
-        private static FieldInfo fTileForeground
-        {
-            get
-            {
-                if (_fTileForeground == null)
-                {
-                    _fTileForeground = typeof(ConsoleChar).GetField("TileLayerForeground");
-                    if (_fTileForeground == null)
-                    {
-                        _fTileForeground = typeof(ConsoleChar).GetField("_TileForeground");
-                        bForegroundIsArray = false;
-                    }
-                    if (_fTileForeground == null)
-                    {
-                        throw new Exception("QudUX Error: Couldn't resolve TileLayerForeground field with reflection.");
-                    }
-                }
-                return _fTileForeground;
-            }
-        }
-
-        public static void ClearTileLayersShim(this ConsoleChar consoleChar)
-        {
-            mClearTileLayers.Invoke(consoleChar, null);
-        }
-
-        public static void SetTileBackgroundShim(this ConsoleChar consoleChar, Color color)
-        {
-            FieldInfo tileLayerBackgroundField = fTileBackground;
-            if (bBackgroundIsArray)
-            {
-                Color[] tileLayerBackground = (Color[])tileLayerBackgroundField.GetValue(consoleChar);
-                tileLayerBackground[0] = color;
-            }
-            else
-            {
-                tileLayerBackgroundField.SetValue(consoleChar, color);
-            }
-        }
-
-        public static void SetTileForegroundShim(this ConsoleChar consoleChar, Color color)
-        {
-            FieldInfo tileLayerForegroundField = fTileForeground;
-            if (bForegroundIsArray)
-            {
-                Color[] tileLayerForeground = (Color[])tileLayerForegroundField.GetValue(consoleChar);
-                tileLayerForeground[0] = color;
-            }
-            else
-            {
-                tileLayerForegroundField.SetValue(consoleChar, color);
-            }
-        }
-
-        public static bool HasTileBackgroundEqualToShim(this ConsoleChar consoleChar, Color color)
-        {
-            object fieldObj = fTileBackground.GetValue(consoleChar);
-            if (bBackgroundIsArray)
-            {
-                return ((Color[])fieldObj)[0] == color;
-            }
-            else
-            {
-                return ((Color)fieldObj) == color;
-            }
-        }
-
-        public static bool HasTileForegroundEqualToShim(this ConsoleChar consoleChar, Color color)
-        {
-            object fieldObj = fTileForeground.GetValue(consoleChar);
-            if (bForegroundIsArray)
-            {
-                return ((Color[])fieldObj)[0] == color;
-            }
-            else
-            {
-                return ((Color)fieldObj) == color;
-            }
-        }
-    }
-
     public class QudUXBorder
     {
         public int X { get; set; }
@@ -151,29 +17,28 @@ namespace QudUX.Utilities
 
         public void Display(ScreenBuffer buffer)
         {
-            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
             buffer[X,Y].Char = (char) 218; //  ┌
-            buffer[X,Y].Attributes = colorGrey;
+            buffer[X,Y].SetDefaultTextColor();
             buffer[X+Width-1,Y].Char = (char) 191; // ┐
-            buffer[X+Width-1,Y].Attributes = colorGrey;
+            buffer[X + Width - 1, Y].SetDefaultTextColor();
             buffer[X,Y+Height -1].Char = (char) 192; //  └
-            buffer[X,Y+Height -1].Attributes = colorGrey;
+            buffer[X, Y + Height - 1].SetDefaultTextColor();
             buffer[X+Width-1,Y+Height -1 ].Char = (char) 217; // ┘
-            buffer[X+Width-1,Y+Height -1 ].Attributes = colorGrey;
-            
+            buffer[X + Width - 1, Y + Height - 1].SetDefaultTextColor();
+
             for (int borderx=X+1; borderx < X+Width - 1 ;borderx++)
             {
-                    buffer[borderx, Y].Char = (char)196;       //  ─
-                    buffer[borderx, Y].Attributes = colorGrey;
-                    buffer[borderx, Y+Height-1].Char = (char)196;       //  ─
-                    buffer[borderx, Y+Height-1].Attributes = colorGrey;
+                buffer[borderx, Y].Char = (char)196;       //  ─
+                buffer[borderx, Y].SetDefaultTextColor();
+                buffer[borderx, Y+Height-1].Char = (char)196;       //  ─
+                buffer[borderx, Y + Height - 1].SetDefaultTextColor();
             }
             for (int bordery=Y+1; bordery < Y+Height - 1 ; bordery++) 
             {
-                    buffer[X, bordery].Char = ((char)179);  // │
-                    buffer[X, bordery].Attributes = colorGrey;
-                    buffer[X+Width - 1, bordery ].Char = ((char)179) ;  // │
-                    buffer[X+Width -1 , bordery ].Attributes = colorGrey; 
+                buffer[X, bordery].Char = ((char)179);  // │
+                buffer[X, bordery].SetDefaultTextColor();
+                buffer[X+Width - 1, bordery ].Char = ((char)179);  // │
+                buffer[X + Width - 1, bordery].SetDefaultTextColor();
             }
 
         }
@@ -510,17 +375,21 @@ namespace QudUX.Utilities
 
         public static void SingleBoxHorizontalDivider(this ScreenBuffer buffer, int y)
         {
-            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
-
             for (int x = 1; x < 79; x++)
             {
                 buffer[x, y].Char = (char)196;       //  ─
-                buffer[x, y].Attributes = colorGrey;
+                buffer[x, y].SetDefaultTextColor();
             }
             buffer[0, y].Char = (char)195;           //  ├
-            buffer[0, y].Attributes = colorGrey;
+            buffer[0, y].SetDefaultTextColor();
             buffer[79, y].Char = (char)180;          //  ┤
-            buffer[79, y].Attributes = colorGrey;
+            buffer[79, y].SetDefaultTextColor();
+        }
+
+        public static void SetDefaultTextColor(this ConsoleChar consoleChar)
+        {
+            consoleChar.SetBackground('k');
+            consoleChar.SetForeground('y');
         }
 
         public static void SingleBoxVerticalDivider(this ScreenBuffer buffer, int x)
@@ -545,17 +414,15 @@ namespace QudUX.Utilities
         }
         public static void SingleBoxVerticalDivider(this ScreenBuffer buffer, int x, int y1, int y2)
         {
-            ushort colorGrey = ColorUtility.MakeColor(TextColor.Grey, TextColor.Black);
-
             for (int y = y1 + 1; y < y2 ; y++)
             {
                 buffer[x, y].Char = (char)179;       //  │
-                buffer[x, y].Attributes = colorGrey;
+                buffer[x, y].SetDefaultTextColor();
             }
             buffer[x, y1].Char = (char)194;           //  ┬
-            buffer[x, y1].Attributes = colorGrey;
+            buffer[x, y1].SetDefaultTextColor();
             buffer[x, y2].Char = (char)193;          //  ┴
-            buffer[x, y2].Attributes = colorGrey;
+            buffer[x, y2].SetDefaultTextColor();
         }
 
     }

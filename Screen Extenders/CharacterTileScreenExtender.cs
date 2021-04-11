@@ -352,8 +352,8 @@ namespace QudUX.ScreenExtenders
 
             buffer.CurrentChar.SetBackground('k');
             buffer.CurrentChar.SetForeground(Tiles[DrawIndex].ForegroundColor[0]);
-            buffer.CurrentChar.SetTileBackgroundShim( ColorUtility.ColorMap[Tiles[DrawIndex].DetailColor[0]] );
-            buffer.CurrentChar.SetTileForegroundShim( ColorUtility.ColorMap[Tiles[DrawIndex].ForegroundColor[0]] );
+            buffer.CurrentChar.SetDetail(Tiles[DrawIndex].DetailColor[0]);
+            buffer.CurrentChar.TileForeground = buffer.CurrentChar.Foreground;
             buffer.CurrentChar.Tile = Tiles[DrawIndex].Tile;
 
             Tiles[DrawIndex].DrawCoords = new Coords(DrawPositionX, DrawPositionY);
@@ -390,8 +390,8 @@ namespace QudUX.ScreenExtenders
 
                 buffer.CurrentChar.SetBackground('k');
                 buffer.CurrentChar.SetForeground(Tiles[i].ForegroundColor[0]);
-                buffer.CurrentChar.SetTileBackgroundShim( ColorUtility.ColorMap[Tiles[i].DetailColor[0]] );
-                buffer.CurrentChar.SetTileForegroundShim( ColorUtility.ColorMap[Tiles[i].ForegroundColor[0]] );
+                buffer.CurrentChar.SetDetail(Tiles[i].DetailColor[0]);
+                buffer.CurrentChar.TileForeground = buffer.CurrentChar.Foreground;
                 buffer.CurrentChar.Tile = Tiles[i].Tile;
                 buffer.X += 2;
             }

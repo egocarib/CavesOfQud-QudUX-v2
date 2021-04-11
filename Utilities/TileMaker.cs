@@ -66,16 +66,18 @@ namespace QudUX.Utilities
             {
                 return false;
             }
-            scrapBuffer[x, y].Attributes = (darken ? GetDarkenedAttributes() : this.Attributes);
+            scrapBuffer[x, y].SetBackground(this.BackgroundColorChar);
+            scrapBuffer[x, y].SetForeground(darken ? 'K' : this.ForegroundColorChar);
+            scrapBuffer[x, y].SetDetail(darken ? 'K' : this.DetailColorChar);
             if (!string.IsNullOrEmpty(this.Tile))
             {
-                scrapBuffer[x, y].SetTileBackgroundShim( (darken ? GetDarkenedForeground() : this.DetailColor) );
-                scrapBuffer[x, y].SetTileForegroundShim( (darken ? GetDarkenedForeground() : this.ForegroundColor) );
+                scrapBuffer[x, y].TileForeground = scrapBuffer[x, y].Foreground;
+                scrapBuffer[x, y].TileBackground = scrapBuffer[x, y].Background;
                 scrapBuffer[x, y].Tile = this.Tile;
             }
             else if (!string.IsNullOrEmpty(this.RenderString))
             {
-                scrapBuffer[x, y].ClearTileLayersShim();
+                scrapBuffer[x, y].Clear();
                 scrapBuffer[x, y].Char = this.RenderString[0];
             }
             else
@@ -95,11 +97,13 @@ namespace QudUX.Utilities
             }
             ConsoleChar screenChar = TextConsole.CurrentBuffer[x, y];
             bool tileApplied = screenChar != null
-                && screenChar.Attributes == this.Attributes
+                && screenChar.Foreground == this.ForegroundColor
+                && screenChar.Background == this.BackgroundColor
                 && ((!string.IsNullOrEmpty(this.Tile)
                         && screenChar.Tile == this.Tile
-                        && screenChar.HasTileBackgroundEqualToShim( this.DetailColor )
-                        && screenChar.HasTileForegroundEqualToShim( this.ForegroundColor ))
+                        && screenChar.Detail == this.DetailColor
+                        && screenChar.TileForeground == this.ForegroundColor
+                        && screenChar.TileBackground == this.BackgroundColor)
                     || (!string.IsNullOrEmpty(this.RenderString)
                         && screenChar.Char == this.RenderString[0]));
             return tileApplied;
@@ -108,16 +112,6 @@ namespace QudUX.Utilities
         public bool IsTileOnScreen(Coords coords)
         {
             return this.IsTileOnScreen(coords.X, coords.Y);
-        }
-
-        private ushort GetDarkenedAttributes()
-        {
-            return QudColorUtility.MakeColor(QudColorUtility.CharToColorMap['K'], QudColorUtility.CharToColorMap['k']);
-        }
-
-        private Color GetDarkenedForeground()
-        {
-            return QudColorUtility.ColorMap['K'];
         }
 
         private void Initialize(GameObject go, bool renderOK = true)
