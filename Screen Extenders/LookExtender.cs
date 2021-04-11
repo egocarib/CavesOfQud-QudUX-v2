@@ -10,19 +10,19 @@ namespace QudUX.ScreenExtenders
     {
         private static Keys? MarkKey = null;
 
-        public static void AddMarkLegendaryOptionToLooker(ScreenBuffer buffer, GameObject target)
+        public static void AddMarkLegendaryOptionToLooker(ScreenBuffer buffer, GameObject target, string uiHotkeyString)
         {
             if ((target.HasProperty("Hero") || target.GetStringProperty("Role") == "Hero") && target.HasPart(typeof(GivesRep)))
             {
                 if ((Keys)LegacyKeyMapping.GetKeyFromCommand("CmdWalk") != Keys.M)
                 {
                     MarkKey = Keys.M;
-                    buffer.Write(" | {{gold|M}} - mark in journal");
+                    buffer.WriteAt(1, 0, uiHotkeyString + " | {{hotkey|M}} - mark in journal");
                 }
                 else if ((Keys)LegacyKeyMapping.GetKeyFromCommand("CmdWalk") != Keys.J)
                 {
                     MarkKey = Keys.J;
-                    buffer.Write(" | {{gold|J}} - mark in journal");
+                    buffer.WriteAt(1, 0, uiHotkeyString + " | {{hotkey|J}} - mark in journal");
                 }
             }
         }

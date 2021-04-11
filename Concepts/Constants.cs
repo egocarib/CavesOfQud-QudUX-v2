@@ -130,6 +130,10 @@ namespace QudUX.Concepts
             {
                 get { return typeof(ScreenBuffer).GetMethod("Write", new Type[] { typeof(string), typeof(bool) }); }
             }
+            public static MethodInfo ScreenBuffer_WriteAt
+            {
+                get { return typeof(ScreenBuffer).GetMethod("WriteAt", new Type[] { typeof(int), typeof(int), typeof(string), typeof(bool) }); }
+            }
             public static MethodInfo ConversationUIExtender_DrawConversationSpeakerTile
             {
                 get { return GetMethodInfo(() => ConversationUIExtender.DrawConversationSpeakerTile(default(ScreenBuffer), default(GameObject))); }
@@ -229,7 +233,7 @@ namespace QudUX.Concepts
             }
             public static MethodInfo LookExtender_AddMarkLegendaryOptionToLooker
             {
-                get { return GetMethodInfo(() => LookExtender.AddMarkLegendaryOptionToLooker(default(ScreenBuffer), default(GameObject))); }
+                get { return GetMethodInfo(() => LookExtender.AddMarkLegendaryOptionToLooker(default(ScreenBuffer), default(GameObject), default(string))); }
             }
             public static MethodInfo LookExtender_CheckKeyPress
             {

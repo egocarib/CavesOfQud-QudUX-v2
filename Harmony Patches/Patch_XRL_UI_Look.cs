@@ -16,10 +16,12 @@ namespace QudUX.HarmonyPatches
             var Sequence1 = new PatchTargetInstructionSet(new List<PatchTargetInstruction>
             {
                 new PatchTargetInstruction(OpCodes.Ldstr, "CmdWalk"),
-                new PatchTargetInstruction(OpCodes.Ldsfld, Look_Buffer, 6),
-                new PatchTargetInstruction(OpCodes.Ldstr, " | {{gold|", 0),
-                new PatchTargetInstruction(OpCodes.Ldstr, "}} - walk", 2),
-                new PatchTargetInstruction(OpCodes.Pop, null, 3),
+                new PatchTargetInstruction(OpCodes.Ldstr, " | {{hotkey|", 8),
+                new PatchTargetInstruction(OpCodes.Ldsfld, Look_Buffer, 30),
+                new PatchTargetInstruction(OpCodes.Ldloc_S, 0),
+                new PatchTargetInstruction(OpCodes.Ldloc_S, 1),
+                new PatchTargetInstruction(OpCodes.Callvirt, ScreenBuffer_WriteAt, 1),
+                new PatchTargetInstruction(OpCodes.Pop, 0),
                 new PatchTargetInstruction(OpCodes.Ldloc_S, 0),
                 new PatchTargetInstruction(OpCodes.Brfalse, 0),
                 new PatchTargetInstruction(OpCodes.Ldloc_S, 0),
@@ -47,8 +49,9 @@ namespace QudUX.HarmonyPatches
                     if (Sequence1.IsMatchComplete(instruction))
                     {
                         yield return instruction;
-                        yield return Sequence1.MatchedInstructions[1].Clone(); //load ScreenBuffer
-                        yield return Sequence1.MatchedInstructions[5].Clone(); //load target GameObject
+                        yield return Sequence1.MatchedInstructions[2].Clone(); //load ScreenBuffer
+                        yield return Sequence1.MatchedInstructions[7].Clone(); //load target GameObject
+                        yield return Sequence1.MatchedInstructions[4].Clone(); //load Look UI hotkey string
                         yield return new CodeInstruction(OpCodes.Call, LookExtender_AddMarkLegendaryOptionToLooker);
                         seq++;
                         continue;
@@ -62,7 +65,7 @@ namespace QudUX.HarmonyPatches
                         instruction.opcode = Sequence2.MatchedInstructions[0].opcode; 
                         instruction.operand = Sequence2.MatchedInstructions[0].operand;
                         yield return instruction; //load pressed key onto stack (with existing label)
-                        yield return Sequence1.MatchedInstructions[5].Clone(); //load target GameObject
+                        yield return Sequence1.MatchedInstructions[7].Clone(); //load target GameObject
                         yield return new CodeInstruction(OpCodes.Ldloc_1); //load flag on the stack
                         yield return new CodeInstruction(OpCodes.Call, LookExtender_CheckKeyPress); //call our method, which puts a bool on stack
                         yield return new CodeInstruction(OpCodes.Stloc_1); //store bool into flag
