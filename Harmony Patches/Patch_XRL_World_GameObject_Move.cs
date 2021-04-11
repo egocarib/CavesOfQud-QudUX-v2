@@ -42,18 +42,19 @@ namespace QudUX.HarmonyPatches
             {
                 new PatchTargetInstruction(OpCodes.Callvirt, Cell_HasBridge),
                 new PatchTargetInstruction(OpCodes.Callvirt, GameObject_IsDangerousOpenLiquidVolume, 80),
+                new PatchTargetInstruction(OpCodes.Ldstr, ", dangerous-looking ", 30),
                 new PatchTargetInstruction(OpCodes.Ldloc_S, 8),
                 new PatchTargetInstruction(OpCodes.Callvirt, GameObject_get_ShortDisplayName, 0),
-                new PatchTargetInstruction(OpCodes.Stfld, XRLCore_MoveConfirmDirection, 30)
+                new PatchTargetInstruction(OpCodes.Stfld, XRLCore_MoveConfirmDirection, 40)
             });
             var Sequence2 = new PatchTargetInstructionSet(new List<PatchTargetInstruction>
             {
                 new PatchTargetInstruction(OpCodes.Callvirt, Cell_GetDangerousOpenLiquidVolume),
-                new PatchTargetInstruction(OpCodes.Ldfld, XRLCore_MoveConfirmDirection, 5),
-                new PatchTargetInstruction(OpCodes.Callvirt, GameObject_get_the, 50),
+                new PatchTargetInstruction(OpCodes.Ldfld, XRLCore_MoveConfirmDirection, 6),
+                new PatchTargetInstruction(OpCodes.Callvirt, GameObject_get_the, 62),
                 new PatchTargetInstruction(OpCodes.Ldloc_S, 4),
                 new PatchTargetInstruction(OpCodes.Callvirt, GameObject_get_ShortDisplayName, 0),
-                new PatchTargetInstruction(OpCodes.Stfld, XRLCore_MoveConfirmDirection, 20)
+                new PatchTargetInstruction(OpCodes.Stfld, XRLCore_MoveConfirmDirection, 22)
             });
 
             int seq = 1;
@@ -65,7 +66,7 @@ namespace QudUX.HarmonyPatches
                 {
                     if (Sequence1.IsMatchComplete(instruction))
                     {
-                        yield return new CodeInstruction(OpCodes.Ldloc_S, Sequence1.MatchedInstructions[2].operand);
+                        yield return new CodeInstruction(OpCodes.Ldloc_S, Sequence1.MatchedInstructions[3].operand);
                         yield return new CodeInstruction(OpCodes.Ldc_I4_1);
                         yield return new CodeInstruction(OpCodes.Call, ParticleTextMaker_EmitFromPlayerIfLiquid);
                         seq++;
