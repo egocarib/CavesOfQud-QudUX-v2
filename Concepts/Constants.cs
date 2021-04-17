@@ -35,14 +35,7 @@ namespace QudUX.Concepts
             {
                 if (string.IsNullOrEmpty(_modDirectory))
                 {
-                    ModManager.ForEachMod(delegate (ModInfo mod)
-                    {
-                        if (mod?.manifest?.id == "QudUX" || mod?.workshopInfo?.Title == "QudUX")
-                        {
-                            _modDirectory = mod.Path;
-                            return;
-                        }
-                    });
+                    _modDirectory = ModManager.GetMod("QudUX")?.Path;
                 }
                 return _modDirectory;
             }
