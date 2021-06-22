@@ -381,7 +381,7 @@ namespace XRL.World.Parts
                 {
                     nameList += (i == questGiverList.Count - 1) ? (" " + conjunction + " ") : ", ";
                 }
-                nameList += Grammar.ShortenName(questGiverList[i].DisplayNameOnly);
+                nameList += questGiverList[i].DisplayNameOnly.Split(',')[0];
             }
             return ConsoleLib.Console.ColorUtility.StripFormatting(nameList);
         }
