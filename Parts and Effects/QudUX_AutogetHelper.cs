@@ -88,7 +88,7 @@ namespace XRL.World.Parts
                     {
                         choice = Popup.ShowYesNo("Disabling auto-pickup for " + Grammar.Pluralize(E.Item.DisplayNameOnly) + ".\n\n"
                             + "Changes to auto-pickup preferences will apply to ALL of your characters. "
-                            + "If you proceed, this message will not be shown again.\n\nProceed?", false, DialogResult.Cancel);
+                            + "If you proceed, this message will not be shown again.\n\nProceed?", AllowEscape: false, defaultResult: DialogResult.Cancel);
                     }
                     if (choice == DialogResult.Yes)
                     {

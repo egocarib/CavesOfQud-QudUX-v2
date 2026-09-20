@@ -8,7 +8,6 @@ using XRL.Rules;
 using XRL.Language;
 using XRL.World.Effects;
 using XRL.World.Conversations;
-using XRL.World.Encounters.EncounterObjectBuilders;
 using Options = QudUX.Concepts.Options;
 using QudUXLogger = QudUX.Utilities.Logger;
 using Battlehub.UIControls;
@@ -160,14 +159,7 @@ namespace XRL.World.Parts
 
                 long ticksRemaining;
                 bool bChanceBasedRestock = false;
-                if (speaker.HasPart("Restocker"))
-                {
-                    _debugSegmentCounter = 7;
-                    Restocker r = speaker.GetPart<Restocker>();
-                    ticksRemaining = r.NextRestockTick - XRLCore.CurrentTurn;
-                    _debugSegmentCounter = 8;
-                }
-                else if (speaker.HasPart("GenericInventoryRestocker"))
+                if (speaker.HasPart("GenericInventoryRestocker"))
                 {
                     _debugSegmentCounter = 9;
                     GenericInventoryRestocker r = speaker.GetPart<GenericInventoryRestocker>();
@@ -468,7 +460,7 @@ namespace XRL.World.Parts
                     {
                         if (questGiver.HasEffect("QudUX_QuestGiverVision"))
                         {
-                            questGiver.RemoveEffect("QudUX_QuestGiverVision");
+                            questGiver.RemoveEffect(questGiver.GetEffect<QudUX_QuestGiverVision>());
                         }
                         questGiver.ApplyEffect(new QudUX_QuestGiverVision(QudUX_ConversationHelper.PlayerBody));
                     }

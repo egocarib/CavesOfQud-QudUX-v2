@@ -33,7 +33,7 @@ namespace QudUX.ScreenExtenders
             EnhancedScoreboard instance = new EnhancedScoreboard();
             try
             {
-                Scoreboard2 highScoreData = Scoreboard2.Load();
+                Scoreboard2 highScoreData = Scoreboard2.Load().GetAwaiter().GetResult();
                 instance.Scores = highScoreData.Scores;
                 instance.EnhancedScores = highScoreData.Scores.Select(parent => new EnhancedScoreEntry(parent)).ToList();
             }

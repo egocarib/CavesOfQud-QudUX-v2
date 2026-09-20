@@ -381,7 +381,7 @@ namespace XRL.UI
 
         private void UpdateSearchString(ref string filter)
         {
-            string entry = Popup.AskString("Enter text to filter by object name.", "", 30);
+            string entry = Popup.AskString("Enter text to filter by object name.", "", MaxLength: 30);
             if (!string.IsNullOrEmpty(entry))
             {
                 if (entry.Length >= 3)
