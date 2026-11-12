@@ -122,7 +122,7 @@ namespace QudUX.Concepts
             }
             public static MethodInfo ScreenBuffer_Write
             {
-                get { return typeof(ScreenBuffer).GetMethod("Write", new Type[] { typeof(string), typeof(bool), typeof(bool), typeof(bool), typeof(List<string>) }); }
+                get { return typeof(ScreenBuffer).GetMethod("Write", new Type[] { typeof(string), typeof(bool), typeof(bool), typeof(bool), typeof(List<string>), typeof(int) }); }
             }
             public static MethodInfo ScreenBuffer_WriteAt
             {
