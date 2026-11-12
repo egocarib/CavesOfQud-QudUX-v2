@@ -8,7 +8,6 @@ using XRL.Rules;
 using XRL.Language;
 using XRL.World.Effects;
 using XRL.World.Conversations;
-using XRL.World.Encounters.EncounterObjectBuilders;
 using Options = QudUX.Concepts.Options;
 using QudUXLogger = QudUX.Utilities.Logger;
 using Battlehub.UIControls;
@@ -58,7 +57,7 @@ namespace XRL.World.Parts
                     Conversation convo = E.GetParameter<Conversation>("Conversation");
                     //QudUXLogger.Log("conversation is " + (convo != null ? "not null" : "null"));
                     
-                    if (speaker.HasPart("GenericInventoryRestocker") || speaker.HasPart("Restocker"))
+                    if (speaker.HasPart("GenericInventoryRestocker"))
                     {
                         try
                         {
@@ -160,14 +159,8 @@ namespace XRL.World.Parts
 
                 long ticksRemaining;
                 bool bChanceBasedRestock = false;
-                if (speaker.HasPart("Restocker"))
-                {
-                    _debugSegmentCounter = 7;
-                    Restocker r = speaker.GetPart<Restocker>();
-                    ticksRemaining = r.NextRestockTick - XRLCore.CurrentTurn;
-                    _debugSegmentCounter = 8;
-                }
-                else if (speaker.HasPart("GenericInventoryRestocker"))
+                // The deterministic Restocker part no longer exists; every trader uses GenericInventoryRestocker.
+                if (speaker.HasPart("GenericInventoryRestocker"))
                 {
                     _debugSegmentCounter = 9;
                     GenericInventoryRestocker r = speaker.GetPart<GenericInventoryRestocker>();
@@ -468,7 +461,7 @@ namespace XRL.World.Parts
                     {
                         if (questGiver.HasEffect("QudUX_QuestGiverVision"))
                         {
-                            questGiver.RemoveEffect("QudUX_QuestGiverVision");
+                            questGiver.RemoveEffect<QudUX_QuestGiverVision>();
                         }
                         questGiver.ApplyEffect(new QudUX_QuestGiverVision(QudUX_ConversationHelper.PlayerBody));
                     }
