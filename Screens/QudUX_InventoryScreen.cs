@@ -631,7 +631,7 @@ namespace XRL.UI
                 else
                 if (keys.IsControl(Keys.F) || ch == ',' || keys.IsMouseEvent("Command:CmdFilter")) //ctrl+f
                 {
-                    FilterString = Popup.AskString("Enter text to filter inventory by item name.", FilterString, 80, 0);
+                    FilterString = Popup.AskString("Enter text to filter inventory by item name.", FilterString, MaxLength: 80, MinLength: 0);
                     ClearLists();
                 }
                 else
