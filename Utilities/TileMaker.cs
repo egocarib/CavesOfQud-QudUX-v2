@@ -152,7 +152,7 @@ namespace QudUX.Utilities
             }
             if (renderOK) //we can't render blueprint-created objects, because the game will throw errors trying to check their current cell
             {
-                go.Render(renderData);
+                go.ComponentRender(renderData);
             }
 
             //renderData.Tile can be null if something has a temporary character replacement, like the up arrow from flying
