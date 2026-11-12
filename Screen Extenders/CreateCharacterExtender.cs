@@ -41,17 +41,17 @@ namespace QudUX.ScreenExtenders
 
                 //for other cases (such as opening a wish menu in game), the following applies changes immediately:
                 ApplyTileToEffects(target, tileInfo.Tile);
-                target.pRender.Tile = tileInfo.Tile;
-                target.pRender.DetailColor = tileInfo.DetailColor;
-                target.pRender.TileColor = $"&{tileInfo.ForegroundColor}";
-                target.pRender.ColorString = $"&{tileInfo.ForegroundColor}";
+                target.Render.Tile = tileInfo.Tile;
+                target.Render.DetailColor = tileInfo.DetailColor;
+                target.Render.TileColor = $"&{tileInfo.ForegroundColor}";
+                target.Render.ColorString = $"&{tileInfo.ForegroundColor}";
 
                 //updates the Character Creation Complete screen buffer to show the new tile
                 if (CreateCharacterBuffer != null && CustomTileWriteCoords != null && TargetObject != null)
                 {
                     CreateCharacterBuffer.Goto(CustomTileWriteCoords.X, CustomTileWriteCoords.Y);
                     CreateCharacterBuffer.Write("{{y|[}}");
-                    CreateCharacterBuffer.Write(TargetObject.pRender);
+                    CreateCharacterBuffer.Write(TargetObject.Render);
                     CreateCharacterBuffer.Write("{{y|]}}");
                 }
             }

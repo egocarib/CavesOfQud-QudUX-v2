@@ -222,9 +222,9 @@ namespace XRL.UI
                     {
                         foreach (GameObject Obj in CategoryMap[Cat.Name])
                         {
-                            if (Obj.pPhysics != null)
+                            if (Obj.Physics != null)
                             {
-                                CategoryList[sCat].Weight += Obj.pPhysics.Weight;
+                                CategoryList[sCat].Weight += Obj.Physics.Weight;
                             }
                             CategoryList[sCat].Items++;
                         }
@@ -482,7 +482,7 @@ namespace XRL.UI
                         StringBuilder detailString = Event.NewStringBuilder();
                         if (AltDisplayMode == false || QudUX.Concepts.Options.UI.ViewItemValues == false)
                         {
-                            Physics pPhysics = CategorySelectionList[keychar].Object.pPhysics;
+                            Physics pPhysics = CategorySelectionList[keychar].Object.Physics;
                             if (pPhysics != null)
                             {
                                 int nWeight = pPhysics.Weight;

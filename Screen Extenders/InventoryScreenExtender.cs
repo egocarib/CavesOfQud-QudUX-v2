@@ -196,7 +196,7 @@ namespace QudUX.ScreenExtenders
         public static string GetItemValueString(GameObject item, GameObject fakeTraderForPriceEval, bool shouldHighlight = false)
         {
             string valueString;
-            int weight = (item.pPhysics != null) ? item.pPhysics.Weight : 0;
+            int weight = (item.Physics != null) ? item.Physics.Weight : 0;
             if (weight <= 0)
             {
                 if (shouldHighlight)

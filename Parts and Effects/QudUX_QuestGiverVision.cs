@@ -56,7 +56,7 @@ namespace XRL.World.Effects
 
         public override bool Apply(GameObject Object)
         {
-            Brain pBrain = Object.pBrain;
+            Brain pBrain = Object.Brain;
             if (pBrain != null)
             {
                 pBrain.Hibernating = false;
@@ -103,7 +103,7 @@ namespace XRL.World.Effects
                 int midDistance = Math.Max((Math.Abs(100 - frame200) - 30), 0) / 10;
                 if (frame200 % 5 < (5 - midDistance))
                 {
-                    E.Tile = this.Object.pRender.Tile;
+                    E.Tile = this.Object.Render.Tile;
                     E.ColorString = "&K";
                 }
                 else

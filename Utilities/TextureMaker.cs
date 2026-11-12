@@ -151,11 +151,11 @@ namespace QudUX.Utilities
 
         public static void FlipGameObjectTexture(XRL.World.GameObject obj, bool unflipIfAlreadyFlipped = true)
         {
-            if (obj.pRender?.Tile == null)
+            if (obj.Render?.Tile == null)
             {
                 return;
             }
-            if (obj.pRender.Tile.EndsWith(Constants.FlippedTileSuffix))
+            if (obj.Render.Tile.EndsWith(Constants.FlippedTileSuffix))
             {
                 if (unflipIfAlreadyFlipped)
                 {
@@ -163,26 +163,26 @@ namespace QudUX.Utilities
                 }
                 return;
             }
-            string sourcePath = obj.pRender.Tile;
+            string sourcePath = obj.Render.Tile;
             string flippedPath = $"{System.IO.Path.ChangeExtension(sourcePath, null)}{Constants.FlippedTileSuffix}";
             GameManager.Instance.uiQueue.queueSingletonTask("QudUX Texture Flip", delegate
             {
                 if (MakeFlippedTexture(flippedPath, out _))
                 {
-                    obj.pRender.Tile = flippedPath;
+                    obj.Render.Tile = flippedPath;
                 }
             });
         }
 
         public static void UnflipGameObjectTexture(XRL.World.GameObject obj)
         {
-            if (obj.pRender?.Tile != null && obj.pRender.Tile.EndsWith(Constants.FlippedTileSuffix))
+            if (obj.Render?.Tile != null && obj.Render.Tile.EndsWith(Constants.FlippedTileSuffix))
             {
-                string sourcePath = obj.pRender.Tile.Substring(0, obj.pRender.Tile.LastIndexOf(Constants.FlippedTileSuffix));
+                string sourcePath = obj.Render.Tile.Substring(0, obj.Render.Tile.LastIndexOf(Constants.FlippedTileSuffix));
                 GetTextureInfoFromBaseTilePath(sourcePath, out string originalTilePath);
                 if (originalTilePath != null)
                 {
-                    obj.pRender.Tile = originalTilePath;
+                    obj.Render.Tile = originalTilePath;
                 }
             }
         }

@@ -178,7 +178,7 @@ namespace XRL.World.Parts
                 //stay the same for a single trader during the entire time that trader is waiting for restock
                 TraderDialogGenData dialogGen = TraderDialogGenData.GetData(speaker, ticksRemaining);
                 _debugSegmentCounter = 12;
-                double daysTillRestock = (double)ticksRemaining / Calendar.turnsPerDay;
+                double daysTillRestock = (double)ticksRemaining / Calendar.TurnsPerDay;
                 string restockDialog;
                 if (daysTillRestock >= 9)
                 {
