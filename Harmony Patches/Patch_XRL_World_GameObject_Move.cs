@@ -59,64 +59,56 @@ namespace QudUX.HarmonyPatches
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Transpiler_Move2(IEnumerable<CodeInstruction> instructions)
         {
-            // Look for the sequence handling movements into deep liquid
-            var Sequence1 = new PatchTargetInstructionSet(new List<PatchTargetInstruction>
+            // Movement into liquid asks for confirmation, then records it with
+            //     The.Core.MoveConfirmDirection = Direction;
+            // Right after that store we emit particle text for the liquid:
+            //  - deep liquid (swimming): the local holding Cell.GetSwimmingDepthLiquid(), isDeepLiquid = true
+            //  - dangerous liquid:       the local holding Cell.GetDangerousOpenLiquidVolume(), isDeepLiquid = false
+            // The confirmation messages themselves changed (string.Concat in build 211, localized templates in
+            // 212+), so the anchors are the liquid lookups and the MoveConfirmDirection store, not message text.
+            var codes = instructions.ToList();
+            var swimming = AccessTools.Method(typeof(Cell), nameof(Cell.GetSwimmingDepthLiquid));
+            var dangerous = AccessTools.Method(typeof(Cell), nameof(Cell.GetDangerousOpenLiquidVolume));
+
+            int search = 0;
+            bool deepPatched = TryEmitAfterConfirm(codes, swimming, true, ref search);
+            bool dangerousPatched = deepPatched && TryEmitAfterConfirm(codes, dangerous, false, ref search);
+
+            ReportPatchStatus("second part", deepPatched && dangerousPatched);
+            return deepPatched && dangerousPatched ? codes : instructions;
+        }
+
+        /// <summary>
+        /// From <paramref name="search"/>, find the next call to <paramref name="liquidLookup"/>, the local its
+        /// result is stored in, and the next store to XRLCore.MoveConfirmDirection; insert
+        /// ParticleTextMaker.EmitFromPlayerIfLiquid(liquid, isDeepLiquid) right after that store.
+        /// </summary>
+        private static bool TryEmitAfterConfirm(List<CodeInstruction> codes, MethodInfo liquidLookup, bool isDeepLiquid, ref int search)
+        {
+            int call = codes.FindIndex(search, ci => ci.Calls(liquidLookup));
+            if (call < 0) return false;
+            int store = codes.FindIndex(call + 1, ci => ci.IsStloc());
+            if (store < 0 || store > call + 2) return false; // allow an intervening dup
+            int confirm = codes.FindIndex(store + 1, ci => ci.StoresField(XRLCore_MoveConfirmDirection));
+            if (confirm < 0) return false;
+
+            codes.InsertRange(confirm + 1, new[]
             {
-                new PatchTargetInstruction(OpCodes.Ldloc_S), // push liquid GameObject to stack
-                new PatchTargetInstruction(OpCodes.Callvirt, 0),
-                new PatchTargetInstruction(OpCodes.Stelem_Ref, 0),
-                new PatchTargetInstruction(OpCodes.Dup, 0),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_5, 0),
-                new PatchTargetInstruction(OpCodes.Ldstr, " and start swimming.", 0),
-                new PatchTargetInstruction(OpCodes.Stelem_Ref, 0),
-                new PatchTargetInstruction(OpCodes.Call, 0),
-                new PatchTargetInstruction(OpCodes.Ldloc_S, 0),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_1, 0),
-                new PatchTargetInstruction(OpCodes.Call, 0),
-                new PatchTargetInstruction(OpCodes.Call, 0),
-                new PatchTargetInstruction(OpCodes.Ldarg_1, 0),
-                new PatchTargetInstruction(OpCodes.Stfld, XRLCore_MoveConfirmDirection, 0)
+                LoadLocalFor(codes[store]),
+                new CodeInstruction(isDeepLiquid ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0),
+                new CodeInstruction(OpCodes.Call, ParticleTextMaker_EmitFromPlayerIfLiquid),
             });
+            search = confirm + 4;
+            return true;
+        }
 
-            // Look for the sequence handling movement into shallow liquid
-            var Sequence2 = new PatchTargetInstructionSet(new List<PatchTargetInstruction>
-            {
-                new PatchTargetInstruction(OpCodes.Ldstr, " again to confirm."),
-                new PatchTargetInstruction(OpCodes.Stelem_Ref, 0),
-                new PatchTargetInstruction(OpCodes.Call, 0),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_S, 0),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_1, 0),
-                new PatchTargetInstruction(OpCodes.Call, 0),
-                new PatchTargetInstruction(OpCodes.Call, 0),
-                new PatchTargetInstruction(OpCodes.Ldarg_1, 0),
-                new PatchTargetInstruction(OpCodes.Stfld, XRLCore_MoveConfirmDirection, 0)
-            });
-
-            int seq = 1;
-            bool patched = false;
-            foreach (var instruction in instructions)
-            {
-                yield return instruction;
-                if (seq == 1)
-                {
-                    if (Sequence1.IsMatchComplete(instruction))
-                    {
-                        yield return Sequence1.MatchedInstructions[0].Clone();
-                        yield return new CodeInstruction(OpCodes.Ldc_I4_1);
-                        yield return new CodeInstruction(OpCodes.Call, ParticleTextMaker_EmitFromPlayerIfLiquid);
-                        seq++;
-                    }
-                }
-                else if (!patched && Sequence2.IsMatchComplete(instruction))
-                {
-                    yield return Sequence1.MatchedInstructions[0].Clone();
-                    yield return new CodeInstruction(OpCodes.Ldc_I4_0);
-                    yield return new CodeInstruction(OpCodes.Call, ParticleTextMaker_EmitFromPlayerIfLiquid);
-                    patched = true;
-                }
-            }
-
-            ReportPatchStatus("second part", patched);
+        private static CodeInstruction LoadLocalFor(CodeInstruction store)
+        {
+            if (store.opcode == OpCodes.Stloc_0) return new CodeInstruction(OpCodes.Ldloc_0);
+            if (store.opcode == OpCodes.Stloc_1) return new CodeInstruction(OpCodes.Ldloc_1);
+            if (store.opcode == OpCodes.Stloc_2) return new CodeInstruction(OpCodes.Ldloc_2);
+            if (store.opcode == OpCodes.Stloc_3) return new CodeInstruction(OpCodes.Ldloc_3);
+            return new CodeInstruction(OpCodes.Ldloc_S, store.operand);
         }
 
         private static readonly Dictionary<string, bool> PatchStatuses = new Dictionary<string, bool>();
