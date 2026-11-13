@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 using HarmonyLib;
 using static QudUX.HarmonyPatches.PatchHelpers;
@@ -14,24 +15,27 @@ namespace QudUX.HarmonyPatches
         [HarmonyPatch("HandleEvent", new Type[] { typeof(XRL.World.ObjectEnteringCellEvent) })]
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            var Sequence = new PatchTargetInstructionSet(new List<PatchTargetInstruction>
-            {
-                new PatchTargetInstruction(OpCodes.Ldstr, "The way is blocked by ")
-            });
-
+            // Anchor: the "The way is blocked by ..." message pushed when the player bumps into a barrier.
+            // Build 211 pushes the literal "The way is blocked by "; build 212+ (localized) pushes a key,
+            // "Physics ObjectEnteringCellEvent PlayerBlocked", followed by "The way is blocked by =object.a.name=.".
+            // Our call is stack-neutral, so it goes right before the message (before the key when there is one).
+            var codes = instructions.ToList();
             bool patched = false;
-            foreach (var instruction in instructions)
+            int at = codes.FindIndex(ci => ci.opcode == OpCodes.Ldstr && ci.operand is string s && s.StartsWith("The way is blocked by"));
+            if (at >= 0)
             {
-                if (!patched && Sequence.IsMatchComplete(instruction))
+                if (at > 0 && codes[at - 1].opcode == OpCodes.Ldstr)
                 {
-                    yield return new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(instruction);
-                    yield return new CodeInstruction(OpCodes.Callvirt, IPart_get_ParentObject);
-                    yield return new CodeInstruction(OpCodes.Call, ParticleTextMaker_EmitFromPlayerIfBarrierInDifferentZone);
-                    yield return instruction.Clone();
-                    patched = true;
-                    continue;
+                    at--; // localization key precedes the default text
                 }
-                yield return instruction;
+                var first = new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(codes[at]);
+                codes.InsertRange(at, new[]
+                {
+                    first,
+                    new CodeInstruction(OpCodes.Callvirt, IPart_get_ParentObject),
+                    new CodeInstruction(OpCodes.Call, ParticleTextMaker_EmitFromPlayerIfBarrierInDifferentZone),
+                });
+                patched = true;
             }
             if (patched)
             {
@@ -44,6 +48,7 @@ namespace QudUX.HarmonyPatches
                     "Failed. This patch may not be compatible with the current game version. "
                     + "Some particle text effects may not be shown when movement is prevented.");
             }
+            return codes;
         }
     }
 }
