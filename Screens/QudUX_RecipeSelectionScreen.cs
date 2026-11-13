@@ -361,7 +361,7 @@ namespace XRL.UI
 			}
 			if (component is PreparedCookingRecipieComponentLiquid componentLiquid)
 			{
-				return LiquidVolume.getLiquid(componentLiquid.liquid).GetName();
+				return LiquidVolume.GetLiquid(componentLiquid.liquid).GetName();
 			}
 			if (component is PreparedCookingRecipieComponentBlueprint componentBlueprint)
 			{
@@ -406,7 +406,7 @@ namespace XRL.UI
 				for (int i = 0; i < recipe.Components.Count; i++)
 				{
 					ingredientList += ingredientNamesOnly[i].PrependListElementJoinString(i, recipe.Components.Count);
-					ingredientList += "{{K|(" + CookingGamestate.GetIngredientQuantity(recipe.Components[i]) + ")}}";
+					ingredientList += "{{K|(" + CookingGameState.GetIngredientQuantity(recipe.Components[i]) + ")}}";
 				}
 			}
 			else
@@ -416,7 +416,7 @@ namespace XRL.UI
 					string thisIngredient = ingredientAmounts[i].ToString() + " serving" + (ingredientAmounts[i] > 1 ? "s" : string.Empty);
 					thisIngredient += " of " + ingredientNamesOnly[i];
 					ingredientList += (i > 0 ? ", " : string.Empty) + thisIngredient;
-					ingredientList += "{{K|(" + CookingGamestate.GetIngredientQuantity(recipe.Components[i]) + ")}}";
+					ingredientList += "{{K|(" + CookingGameState.GetIngredientQuantity(recipe.Components[i]) + ")}}";
 				}
 			}
 			return ingredientList;

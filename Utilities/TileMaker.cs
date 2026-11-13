@@ -127,7 +127,7 @@ namespace QudUX.Utilities
             this.BackgroundColor = QudColorUtility.ColorMap['k'];
 
             //gather render data for GameObject similar to how the game does it in Cell.cs
-            Render pRender = go?.pRender;
+            Render pRender = go?.Render;
             if (pRender == null || !pRender.Visible || Globals.RenderMode != RenderModeType.Tiles)
             {
                 return;
@@ -140,7 +140,7 @@ namespace QudUX.Utilities
             }
             else
             {
-                renderData.Tile = go.pRender.Tile;
+                renderData.Tile = go.Render.Tile;
             }
             if (!string.IsNullOrEmpty(pRender.TileColor))
             {
@@ -152,7 +152,7 @@ namespace QudUX.Utilities
             }
             if (renderOK) //we can't render blueprint-created objects, because the game will throw errors trying to check their current cell
             {
-                go.Render(renderData);
+                go.ComponentRender(renderData);
             }
 
             //renderData.Tile can be null if something has a temporary character replacement, like the up arrow from flying

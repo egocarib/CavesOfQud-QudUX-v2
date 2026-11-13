@@ -125,9 +125,9 @@ namespace XRL.World.Parts
                 return string.Empty;
             }
             List<string> relationList = new List<string>();
-            foreach (string key in legendaryCreature.pBrain.FactionMembership.Keys)
+            foreach (var membership in legendaryCreature.Brain.Allegiance)
             {
-                Faction ifExists = Factions.GetIfExists(key);
+                Faction ifExists = Factions.GetIfExists(membership.Key);
                 if (ifExists != null && ifExists.Visible)
                 {
                     relationList.Add("Loved by {{C|" + ifExists.GetFormattedName() + "}}");

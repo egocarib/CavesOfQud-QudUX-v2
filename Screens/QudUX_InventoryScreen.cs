@@ -222,9 +222,9 @@ namespace XRL.UI
                     {
                         foreach (GameObject Obj in CategoryMap[Cat.Name])
                         {
-                            if (Obj.pPhysics != null)
+                            if (Obj.Physics != null)
                             {
-                                CategoryList[sCat].Weight += Obj.pPhysics.Weight;
+                                CategoryList[sCat].Weight += Obj.Physics.Weight;
                             }
                             CategoryList[sCat].Items++;
                         }
@@ -482,7 +482,7 @@ namespace XRL.UI
                         StringBuilder detailString = Event.NewStringBuilder();
                         if (AltDisplayMode == false || QudUX.Concepts.Options.UI.ViewItemValues == false)
                         {
-                            Physics pPhysics = CategorySelectionList[keychar].Object.pPhysics;
+                            Physics pPhysics = CategorySelectionList[keychar].Object.Physics;
                             if (pPhysics != null)
                             {
                                 int nWeight = pPhysics.Weight;
@@ -631,7 +631,7 @@ namespace XRL.UI
                 else
                 if (keys.IsControl(Keys.F) || ch == ',' || keys.IsMouseEvent("Command:CmdFilter")) //ctrl+f
                 {
-                    FilterString = Popup.AskString("Enter text to filter inventory by item name.", FilterString, 80, 0);
+                    FilterString = Popup.AskString("Enter text to filter inventory by item name.", FilterString, MaxLength: 80, MinLength: 0);
                     ClearLists();
                 }
                 else

@@ -15,11 +15,11 @@ namespace QudUX.Wishes
         {
             Utilities.Logger.Log("Wish invoked: Fliptile");
             var player = IComponent<GameObject>.ThePlayer;
-            if (player != null && player.pPhysics != null)
+            if (player != null && player.Physics != null)
             {
                 try
                 {
-                    Cell cell = player.pPhysics.PickDestinationCell(
+                    Cell cell = player.Physics.PickDestinationCell(
                         Range: 999,
                         VisLevel: AllowVis.OnlyExplored,
                         Locked: false,

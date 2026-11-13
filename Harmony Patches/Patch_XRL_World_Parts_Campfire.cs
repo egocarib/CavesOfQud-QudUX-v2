@@ -412,118 +412,124 @@ namespace QudUX.HarmonyPatches
         [HarmonyTranspiler]
         [HarmonyPatch("CookFromRecipe")]
         static IEnumerable<CodeInstruction> Transpiler_CookFromRecipe(IEnumerable<CodeInstruction> instructions, ILGenerator gen)
-        {   
+        {
             /*
-                1.  Recover List<Tuple<string, recipe>>
-                2.  Jump over vanilla display
-                3.  draw custom screen
+                Vanilla CookFromRecipe (1.0+):
+                    List<Tuple<string, CookingRecipe>> recipes = new ...;   // filled from known recipes
+                    if (recipes.Count > 0) goto pickRecipe; else "You don't know any recipes."
+                  pickRecipe:
+                    index = Popup.PickOption(...); then a Cook / Favorite / Forget / Back sub-menu ...
+                  cook:
+                    List<GameObject> used = new List<GameObject>();
+                    if (!recipes[index].Item2.UseIngredients(used)) ...
+                We send the "Count > 0" branch to our screen instead, which handles favorite/forget
+                itself and returns the chosen index (or < 0 to back out), then continue at "cook".
+                Vanilla's UseIngredients therefore still consumes the ingredients.
+                Anchors are typed operands (the recipe list's constructor, List.get_Count,
+                List<GameObject>'s constructor), not instruction gaps.
+
+                The recipe list's element type differs by build: Tuple<string, CookingRecipe> on 211,
+                Tuple<string, JournalRecipeNote> on 212+. It is read from the list constructor at patch
+                time; non-CookingRecipe lists go through ShowForRecipeNotes<T>, which unwraps each
+                entry's Recipe for our screen and maps the choice back to vanilla's list.
             */
-            
-            // Used to recover recipe list
-            var Seq1 = new PatchTargetInstructionSet(
-                new PatchTargetInstruction(OpCodes.Ldc_I4_0),
-                new PatchTargetInstruction(OpCodes.Stloc_1),
-                new PatchTargetInstruction(OpCodes.Call),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_0, 0),
-                new PatchTargetInstruction(OpCodes.Stloc_2, 0),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_0, 0),
-                new PatchTargetInstruction(OpCodes.Stloc_3, 0),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_0, 0),
-                new PatchTargetInstruction(OpCodes.Stloc_S, 0),
-                new PatchTargetInstruction(OpCodes.Newobj, 0),
-                new PatchTargetInstruction(OpCodes.Stloc_S, 0) // operand is recipe list index
-            );
-
-            /*
-                This sequence detects the end of the loop filling
-                up the list of recipe.
-
-                The last instruction, Bgt_S, evaluates if the number
-                of recipe found is greater than zero. If it is,
-                it transfers control to the loop displaying vanilla
-                menu.
-
-                If it doesn't it transfer controls to vanilla "No known recipe"
-                menu.
-
-                With this sequence we'll just override Bgt_S operand, so that
-                instead of jump into vanilla display loop, it'll jump into
-                our screen display.
-
-                With this, we effectively override vanilla display while
-                keeping vanilla "No known recipe" display, which our screen
-                doesn't support.
-            */
-            var Seq2 = new PatchTargetInstructionSet(
-                new PatchTargetInstruction(OpCodes.Call),
-                new PatchTargetInstruction(OpCodes.Brtrue_S, 0),
-                new PatchTargetInstruction(OpCodes.Leave_S, 0),
-                new PatchTargetInstruction(OpCodes.Ldloca_S, 0),
-                new PatchTargetInstruction(OpCodes.Constrained, 0),
-                new PatchTargetInstruction(OpCodes.Callvirt, 0),
-                new PatchTargetInstruction(OpCodes.Endfinally, 0),
-                new PatchTargetInstruction(OpCodes.Ldloc_S, 0),
-                new PatchTargetInstruction(OpCodes.Callvirt, 0),
-                new PatchTargetInstruction(OpCodes.Ldc_I4_0, 0),
-                new PatchTargetInstruction(OpCodes.Bgt_S, 0) 
-            );
-
-            // Detects the end of vanilla display
-            // Set label to last instruction to finalize override
-            var Seq3 = new PatchTargetInstructionSet(
-                new PatchTargetInstruction(OpCodes.Newobj),
-                new PatchTargetInstruction(OpCodes.Stloc_S, 0),
-                new PatchTargetInstruction(OpCodes.Ldloc_S, 0),
-                new PatchTargetInstruction(OpCodes.Ldloc_S, 0), // operand is index of the int var representing recipe index
-                new PatchTargetInstruction(OpCodes.Callvirt, 0),
-                new PatchTargetInstruction(OpCodes.Callvirt, 0),
-                new PatchTargetInstruction(OpCodes.Ldloc_S, 0),
-                new PatchTargetInstruction(OpCodes.Callvirt, 0),
-                new PatchTargetInstruction(OpCodes.Brfalse, 0),
-                new PatchTargetInstruction(OpCodes.Call, 0)
-            );
-
-            int seq = 1;
-            Label jumpLabel = gen.DefineLabel();
+            var codes = instructions.ToList();
             bool patched = false;
-
-            foreach(CodeInstruction instruction in instructions)
+            try
             {
-                if(seq == 1 && Seq1.IsMatchComplete(instruction))
-                {   
-                    seq++;
-                }
-                else
-                if(seq == 2 && Seq2.IsMatchComplete(instruction))
+                var matcher = new CodeMatcher(codes, gen)
+                    .MatchStartForward(
+                        new CodeMatch(ci => ci.opcode == OpCodes.Newobj && ci.operand is ConstructorInfo c && IsRecipeListType(c.DeclaringType)),
+                        new CodeMatch(ci => ci.IsStloc()));
+                if (matcher.IsValid)
                 {
-                    instruction.operand = jumpLabel;
-                    yield return instruction; // Bgt_S with out jump label as operand
-                    seq++;
-                    continue;
+                    Type recipeListType = ((ConstructorInfo)matcher.Operand).DeclaringType;
+                    Type entryType = recipeListType.GetGenericArguments()[0].GetGenericArguments()[1];
+                    MethodInfo showScreenMethod = entryType == typeof(XRL.World.Skills.Cooking.CookingRecipe)
+                        ? QudUX_RecipeSelectionScreen_Static_Show
+                        : AccessTools.Method(typeof(Patch_XRL_World_Parts_Campfire_Cooking), nameof(ShowForRecipeNotes)).MakeGenericMethod(entryType);
+                    object recipeList = matcher.InstructionAt(1).operand;
+                    matcher.MatchStartForward(
+                        new CodeMatch(ci => ci.IsLdloc() && Equals(ci.operand, recipeList)),
+                        new CodeMatch(OpCodes.Callvirt, AccessTools.PropertyGetter(recipeListType, "Count")),
+                        new CodeMatch(OpCodes.Ldc_I4_0),
+                        new CodeMatch(ci => ci.opcode == OpCodes.Bgt || ci.opcode == OpCodes.Bgt_S));
+                    if (matcher.IsValid)
+                    {
+                        int countBranch = matcher.Pos + 3;
+                        matcher.MatchStartForward(
+                            new CodeMatch(OpCodes.Newobj, List_GameObject_ctor),
+                            new CodeMatch(ci => ci.IsStloc()),
+                            new CodeMatch(ci => ci.IsLdloc() && Equals(ci.operand, recipeList)),
+                            new CodeMatch(ci => ci.IsLdloc()),
+                            new CodeMatch(OpCodes.Callvirt, AccessTools.Method(recipeListType, "get_Item")));
+                        if (matcher.IsValid)
+                        {
+                            object recipeIndex = matcher.InstructionAt(3).operand;
+                            Label cook = gen.DefineLabel();
+                            Label showScreen = gen.DefineLabel();
+                            Label chosen = gen.DefineLabel();
+                            matcher.AddLabels(new[] { cook });
+                            matcher.Insert(
+                                new CodeInstruction(OpCodes.Br, cook), // vanilla fall-through into "cook" skips our block
+                                new CodeInstruction(OpCodes.Ldloc_S, recipeList).WithLabels(showScreen),
+                                new CodeInstruction(OpCodes.Call, showScreenMethod),
+                                new CodeInstruction(OpCodes.Stloc_S, recipeIndex),
+                                new CodeInstruction(OpCodes.Ldloc_S, recipeIndex),
+                                new CodeInstruction(OpCodes.Ldc_I4_0),
+                                new CodeInstruction(OpCodes.Bge, chosen),
+                                new CodeInstruction(OpCodes.Ldc_I4_0), // backed out of our screen: return false
+                                new CodeInstruction(OpCodes.Ret),
+                                new CodeInstruction(OpCodes.Br, cook).WithLabels(chosen));
+                            codes = matcher.InstructionEnumeration().ToList();
+                            codes[countBranch].opcode = OpCodes.Bgt;
+                            codes[countBranch].operand = showScreen;
+                            patched = true;
+                        }
+                    }
                 }
-                else
-                if(seq > 2 && !patched && Seq3.IsMatchComplete(instruction))
-                {
-                    CodeInstruction pushList = new CodeInstruction(OpCodes.Ldloc_S, Seq1.MatchedInstructions[10].operand);
-
-                    yield return pushList.WithLabels(jumpLabel); // push recipe list on stack with label
-                    yield return new CodeInstruction(OpCodes.Call, QudUX_RecipeSelectionScreen_Static_Show); // Add screen call
-                    yield return new CodeInstruction(OpCodes.Stloc_S, Seq3.MatchedInstructions[3].operand); // Save screen result to recipe index variable
-                    yield return new CodeInstruction(OpCodes.Ldc_I4_0); // push 0 on stack
-                    yield return new CodeInstruction(OpCodes.Ldloc_S, Seq3.MatchedInstructions[3].operand); // push index on stack
-                    Label dontQuit = gen.DefineLabel();
-                    yield return new CodeInstruction(OpCodes.Ble_S, dontQuit); // check if index >= 0. if yes, dontQuit
-                    yield return new CodeInstruction(OpCodes.Ldc_I4_0); // if index < 0, push 0 on stack
-                    yield return new CodeInstruction(OpCodes.Ret); // and return
-                    yield return instruction.WithLabels(dontQuit);
-                    patched = true;
-                    continue;
-                }
-
-                yield return instruction;
             }
-
+            catch (Exception ex)
+            {
+                Utilities.Logger.Log("[CookFromRecipe Patch] " + ex);
+                codes = instructions.ToList();
+                patched = false;
+            }
             ReportPatchStatus("CookFromRecipe", patched);
+            return patched ? codes : instructions;
+        }
+        /// <summary>List&lt;Tuple&lt;string, T&gt;&gt; where T is a CookingRecipe or wraps one in a Recipe member.</summary>
+        private static bool IsRecipeListType(Type t)
+        {
+            if (t == null || !t.IsGenericType || t.GetGenericTypeDefinition() != typeof(List<>)) return false;
+            Type tuple = t.GetGenericArguments()[0];
+            if (!tuple.IsGenericType || tuple.GetGenericTypeDefinition() != typeof(Tuple<,>)) return false;
+            Type[] args = tuple.GetGenericArguments();
+            return args[0] == typeof(string) && RecipeAccessor(args[1]) != null;
+        }
+
+        private static Func<object, XRL.World.Skills.Cooking.CookingRecipe> RecipeAccessor(Type entryType)
+        {
+            if (entryType == typeof(XRL.World.Skills.Cooking.CookingRecipe)) return o => (XRL.World.Skills.Cooking.CookingRecipe)o;
+            FieldInfo field = AccessTools.Field(entryType, "Recipe");
+            if (field != null && field.FieldType == typeof(XRL.World.Skills.Cooking.CookingRecipe)) return o => (XRL.World.Skills.Cooking.CookingRecipe)field.GetValue(o);
+            PropertyInfo prop = AccessTools.Property(entryType, "Recipe") ?? AccessTools.Property(entryType, "recipe");
+            if (prop != null && prop.PropertyType == typeof(XRL.World.Skills.Cooking.CookingRecipe)) return o => (XRL.World.Skills.Cooking.CookingRecipe)prop.GetValue(o);
+            return null;
+        }
+
+        /// <summary>
+        /// Build 212+: vanilla's list holds JournalRecipeNote entries. Show our screen over their recipes, then
+        /// return the index of the chosen recipe in vanilla's list (our screen sorts and filters its own copy).
+        /// </summary>
+        public static int ShowForRecipeNotes<TNote>(List<Tuple<string, TNote>> notes)
+        {
+            var recipeOf = RecipeAccessor(typeof(TNote));
+            var recipes = notes.Select(n => Tuple.Create(n.Item1, recipeOf(n.Item2))).Where(t => t.Item2 != null).ToList();
+            int chosen = XRL.UI.QudUX_RecipeSelectionScreen.Static_Show(recipes);
+            if (chosen < 0 || chosen >= recipes.Count) return -1;
+            var recipe = recipes[chosen].Item2;
+            return notes.FindIndex(n => ReferenceEquals(recipeOf(n.Item2), recipe));
         }
 
         private static readonly Dictionary<string, bool> PatchStatuses = new Dictionary<string, bool>();
@@ -540,14 +546,14 @@ namespace QudUX.HarmonyPatches
                     {
                         msg = PatchStatuses.Where(s => !s.Value).ToArray()[0].Key;
                     }
-                    PatchHelpers.LogPatchResult("GameObject.Move",
+                    PatchHelpers.LogPatchResult("Campfire",
                         $"Failed ({msg}). This patch may not be compatible with the current game version. "
-                        + "Some particle text effects may not be shown when movement is prevented.");
+                        + "The revamped cooking menus won't be used for the failed method(s).");
                 }
                 else
                 {
-                    PatchHelpers.LogPatchResult("GameObject.Move",
-                        "Patched successfully." /* Adds option to show particle text messages when movement is prevented for various reasons. */ );
+                    PatchHelpers.LogPatchResult("Campfire",
+                        "Patched successfully." /* Replaces the "cook with ingredients" and "choose recipe" menus. */ );
                 }
                 PatchStatuses.Clear();
             }

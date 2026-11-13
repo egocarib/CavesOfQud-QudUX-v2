@@ -12,8 +12,9 @@ namespace QudUX.HarmonyPatches
         [HarmonyPatch("Show")]
         static bool Prefix(XRL.World.GameObject GO, ref XRL.UI.ScreenReturn __result)
         {
+            // The classic InventoryScreen is only reached when Options.ModernUI is off,
+            // so the old OverlayPrereleaseInventory check is no longer needed.
             if (QudUXOptions.UI.UseQudUXInventory
-                && !GameOptions.OverlayPrereleaseInventory
                 && XRLCore.Core.Game.Player.Body.GetConfusion() <= 0)
             {
                 __result = new XRL.UI.QudUX_InventoryScreen().Show(GO);
