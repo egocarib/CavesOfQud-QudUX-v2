@@ -427,18 +427,27 @@ namespace QudUX.HarmonyPatches
                 Vanilla's UseIngredients therefore still consumes the ingredients.
                 Anchors are typed operands (the recipe list's constructor, List.get_Count,
                 List<GameObject>'s constructor), not instruction gaps.
+
+                The recipe list's element type differs by build: Tuple<string, CookingRecipe> on 211,
+                Tuple<string, JournalRecipeNote> on 212+. It is read from the list constructor at patch
+                time; non-CookingRecipe lists go through ShowForRecipeNotes<T>, which unwraps each
+                entry's Recipe for our screen and maps the choice back to vanilla's list.
             */
             var codes = instructions.ToList();
             bool patched = false;
             try
             {
-                var recipeListType = typeof(List<Tuple<string, XRL.World.Skills.Cooking.CookingRecipe>>);
                 var matcher = new CodeMatcher(codes, gen)
                     .MatchStartForward(
-                        new CodeMatch(OpCodes.Newobj, AccessTools.Constructor(recipeListType, Type.EmptyTypes)),
+                        new CodeMatch(ci => ci.opcode == OpCodes.Newobj && ci.operand is ConstructorInfo c && IsRecipeListType(c.DeclaringType)),
                         new CodeMatch(ci => ci.IsStloc()));
                 if (matcher.IsValid)
                 {
+                    Type recipeListType = ((ConstructorInfo)matcher.Operand).DeclaringType;
+                    Type entryType = recipeListType.GetGenericArguments()[0].GetGenericArguments()[1];
+                    MethodInfo showScreenMethod = entryType == typeof(XRL.World.Skills.Cooking.CookingRecipe)
+                        ? QudUX_RecipeSelectionScreen_Static_Show
+                        : AccessTools.Method(typeof(Patch_XRL_World_Parts_Campfire_Cooking), nameof(ShowForRecipeNotes)).MakeGenericMethod(entryType);
                     object recipeList = matcher.InstructionAt(1).operand;
                     matcher.MatchStartForward(
                         new CodeMatch(ci => ci.IsLdloc() && Equals(ci.operand, recipeList)),
@@ -464,7 +473,7 @@ namespace QudUX.HarmonyPatches
                             matcher.Insert(
                                 new CodeInstruction(OpCodes.Br, cook), // vanilla fall-through into "cook" skips our block
                                 new CodeInstruction(OpCodes.Ldloc_S, recipeList).WithLabels(showScreen),
-                                new CodeInstruction(OpCodes.Call, QudUX_RecipeSelectionScreen_Static_Show),
+                                new CodeInstruction(OpCodes.Call, showScreenMethod),
                                 new CodeInstruction(OpCodes.Stloc_S, recipeIndex),
                                 new CodeInstruction(OpCodes.Ldloc_S, recipeIndex),
                                 new CodeInstruction(OpCodes.Ldc_I4_0),
@@ -489,6 +498,40 @@ namespace QudUX.HarmonyPatches
             ReportPatchStatus("CookFromRecipe", patched);
             return patched ? codes : instructions;
         }
+        /// <summary>List&lt;Tuple&lt;string, T&gt;&gt; where T is a CookingRecipe or wraps one in a Recipe member.</summary>
+        private static bool IsRecipeListType(Type t)
+        {
+            if (t == null || !t.IsGenericType || t.GetGenericTypeDefinition() != typeof(List<>)) return false;
+            Type tuple = t.GetGenericArguments()[0];
+            if (!tuple.IsGenericType || tuple.GetGenericTypeDefinition() != typeof(Tuple<,>)) return false;
+            Type[] args = tuple.GetGenericArguments();
+            return args[0] == typeof(string) && RecipeAccessor(args[1]) != null;
+        }
+
+        private static Func<object, XRL.World.Skills.Cooking.CookingRecipe> RecipeAccessor(Type entryType)
+        {
+            if (entryType == typeof(XRL.World.Skills.Cooking.CookingRecipe)) return o => (XRL.World.Skills.Cooking.CookingRecipe)o;
+            FieldInfo field = AccessTools.Field(entryType, "Recipe");
+            if (field != null && field.FieldType == typeof(XRL.World.Skills.Cooking.CookingRecipe)) return o => (XRL.World.Skills.Cooking.CookingRecipe)field.GetValue(o);
+            PropertyInfo prop = AccessTools.Property(entryType, "Recipe") ?? AccessTools.Property(entryType, "recipe");
+            if (prop != null && prop.PropertyType == typeof(XRL.World.Skills.Cooking.CookingRecipe)) return o => (XRL.World.Skills.Cooking.CookingRecipe)prop.GetValue(o);
+            return null;
+        }
+
+        /// <summary>
+        /// Build 212+: vanilla's list holds JournalRecipeNote entries. Show our screen over their recipes, then
+        /// return the index of the chosen recipe in vanilla's list (our screen sorts and filters its own copy).
+        /// </summary>
+        public static int ShowForRecipeNotes<TNote>(List<Tuple<string, TNote>> notes)
+        {
+            var recipeOf = RecipeAccessor(typeof(TNote));
+            var recipes = notes.Select(n => Tuple.Create(n.Item1, recipeOf(n.Item2))).Where(t => t.Item2 != null).ToList();
+            int chosen = XRL.UI.QudUX_RecipeSelectionScreen.Static_Show(recipes);
+            if (chosen < 0 || chosen >= recipes.Count) return -1;
+            var recipe = recipes[chosen].Item2;
+            return notes.FindIndex(n => ReferenceEquals(recipeOf(n.Item2), recipe));
+        }
+
         private static readonly Dictionary<string, bool> PatchStatuses = new Dictionary<string, bool>();
         private static void ReportPatchStatus(string patchname, bool success)
         {
