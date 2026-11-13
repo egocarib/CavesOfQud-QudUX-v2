@@ -361,7 +361,7 @@ namespace XRL.UI
 			}
 			if (component is PreparedCookingRecipieComponentLiquid componentLiquid)
 			{
-				return LiquidVolume.getLiquid(componentLiquid.liquid).GetName();
+				return LiquidVolume.GetLiquid(componentLiquid.liquid).GetName();
 			}
 			if (component is PreparedCookingRecipieComponentBlueprint componentBlueprint)
 			{
