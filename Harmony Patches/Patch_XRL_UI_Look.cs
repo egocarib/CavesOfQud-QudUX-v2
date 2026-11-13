@@ -37,12 +37,16 @@ namespace QudUX.HarmonyPatches
             return instructions;
         }
 
+        private static bool IsString(CodeInstruction ci, string fragment) =>
+            ci.opcode == OpCodes.Ldstr && ci.operand is string s && s.IndexOf(fragment, System.StringComparison.OrdinalIgnoreCase) >= 0;
+
         private static bool TryPatch(List<CodeInstruction> source)
         {
             var matcher = new CodeMatcher(source);
 
-            // The looked-at object: the GameObject local tested just before the " | {{hotkey|" + Accept + "}} interact" entry.
-            matcher.MatchStartForward(new CodeMatch(OpCodes.Ldstr, "}} interact"));
+            // The looked-at object: the GameObject local tested just before the "interact" hotkey entry.
+            // Build 211: ldstr "}} interact"; build 212+ (localized): ldstr "Look ShowLooker Interact".
+            matcher.MatchStartForward(new CodeMatch(ci => IsString(ci, "interact")));
             if (matcher.IsInvalid) return false;
             object targetLocal = null;
             for (int i = matcher.Pos; i >= 0 && targetLocal == null; i--)
@@ -55,13 +59,14 @@ namespace QudUX.HarmonyPatches
             }
             if (targetLocal == null) return false;
 
-            // 1. Hotkey bar: ... Append(" | {{hotkey|n}} show navweight") ... ldloc builder; callvirt ToString; stloc text
-            matcher.MatchEndForward(
-                new CodeMatch(OpCodes.Ldstr, " | {{hotkey|n}} show navweight"));
+            // 1. Hotkey bar: ... the debug-only "show navweight" entry ... ldloc builder; callvirt ToString; stloc text
+            matcher.MatchEndForward(new CodeMatch(ci => IsString(ci, "navweight")));
             if (matcher.IsInvalid) return false;
             matcher.MatchEndForward(
                 new CodeMatch(ci => ci.IsLdloc() && ci.operand is LocalBuilder lb && lb.LocalType == typeof(TextBuilder)),
-                new CodeMatch(OpCodes.Callvirt, AccessTools.Method(typeof(object), nameof(object.ToString))),
+                new CodeMatch(ci => (ci.opcode == OpCodes.Callvirt || ci.opcode == OpCodes.Call)
+                                    && ci.operand is System.Reflection.MethodInfo m && m.Name == nameof(object.ToString)
+                                    && m.ReturnType == typeof(string) && m.GetParameters().Length == 0),
                 new CodeMatch(ci => ci.IsStloc() && ci.operand is LocalBuilder lb && lb.LocalType == typeof(string)));
             if (matcher.IsInvalid) return false;
             object textLocal = matcher.Operand;
@@ -71,51 +76,69 @@ namespace QudUX.HarmonyPatches
                 new CodeInstruction(OpCodes.Call, LookExtender_ReturnModifiedString),
                 new CodeInstruction(OpCodes.Stloc_S, textLocal));
 
-            // 2. Exit check: if (key == Keys.NumPad5 || key == Keys.Escape) flag = true;  [here]  ...next key test
-            matcher.MatchStartForward(
+            // 2. Exit check: if (key == Keys.NumPad5 || key == Keys.Escape) <set exit flag>;  [here]  ...next key test
+            //    Build 211 sets a local:            ldc.i4.1; stloc flag
+            //    Build 212+ sets a field on state:  ldsfld Look.Looker; ldc.i4.1; stfld LookerState.Done
+            var exitTest = new[]
+            {
                 new CodeMatch(ci => ci.IsLdloc()),
-                new CodeMatch(OpCodes.Ldc_I4_S),
+                new CodeMatch(ci => ci.opcode == OpCodes.Ldc_I4_S && System.Convert.ToInt32(ci.operand) == (int)ConsoleLib.Console.Keys.NumPad5),
                 new CodeMatch(ci => ci.opcode == OpCodes.Beq || ci.opcode == OpCodes.Beq_S),
                 new CodeMatch(ci => ci.IsLdloc()),
-                new CodeMatch(OpCodes.Ldc_I4_S),
+                new CodeMatch(ci => ci.opcode == OpCodes.Ldc_I4_S && System.Convert.ToInt32(ci.operand) == (int)ConsoleLib.Console.Keys.Escape),
                 new CodeMatch(ci => ci.opcode == OpCodes.Bne_Un || ci.opcode == OpCodes.Bne_Un_S),
-                new CodeMatch(OpCodes.Ldc_I4_1),
-                new CodeMatch(ci => ci.IsStloc()),
-                new CodeMatch(ci => ci.IsLdloc()));
-            while (matcher.IsValid && !(System.Convert.ToInt32(matcher.InstructionAt(1).operand) == (int)ConsoleLib.Console.Keys.NumPad5
-                                        && System.Convert.ToInt32(matcher.InstructionAt(4).operand) == (int)ConsoleLib.Console.Keys.Escape))
-            {
-                matcher.Advance(1).MatchStartForward(
-                    new CodeMatch(ci => ci.IsLdloc()), new CodeMatch(OpCodes.Ldc_I4_S),
-                    new CodeMatch(ci => ci.opcode == OpCodes.Beq || ci.opcode == OpCodes.Beq_S),
-                    new CodeMatch(ci => ci.IsLdloc()), new CodeMatch(OpCodes.Ldc_I4_S),
-                    new CodeMatch(ci => ci.opcode == OpCodes.Bne_Un || ci.opcode == OpCodes.Bne_Un_S),
-                    new CodeMatch(OpCodes.Ldc_I4_1), new CodeMatch(ci => ci.IsStloc()), new CodeMatch(ci => ci.IsLdloc()));
-            }
+            };
+            matcher.MatchStartForward(exitTest);
             if (matcher.IsInvalid) return false;
             CodeInstruction loadKey = matcher.InstructionAt(0);
-            CodeInstruction storeFlag = matcher.InstructionAt(7);
-            CodeInstruction loadFlag = storeFlag.opcode == OpCodes.Stloc_0 ? new CodeInstruction(OpCodes.Ldloc_0)
-                                     : storeFlag.opcode == OpCodes.Stloc_1 ? new CodeInstruction(OpCodes.Ldloc_1)
-                                     : storeFlag.opcode == OpCodes.Stloc_2 ? new CodeInstruction(OpCodes.Ldloc_2)
-                                     : storeFlag.opcode == OpCodes.Stloc_3 ? new CodeInstruction(OpCodes.Ldloc_3)
-                                     : new CodeInstruction(OpCodes.Ldloc_S, storeFlag.operand);
+            CodeInstruction a = matcher.InstructionAt(6), b = matcher.InstructionAt(7), c = matcher.InstructionAt(8);
+
+            CodeInstruction[] loadFlag, storeFlagPrefix, storeFlag;
+            int afterSet;
+            if (a.opcode == OpCodes.Ldc_I4_1 && b.IsStloc())
+            {
+                loadFlag = new[] { LoadLocalFor(b) };
+                storeFlagPrefix = new CodeInstruction[0];
+                storeFlag = new[] { new CodeInstruction(b.opcode, b.operand) };
+                afterSet = 8;
+            }
+            else if (a.opcode == OpCodes.Ldsfld && b.opcode == OpCodes.Ldc_I4_1 && c.opcode == OpCodes.Stfld && c.operand is System.Reflection.FieldInfo doneField)
+            {
+                loadFlag = new[] { new CodeInstruction(OpCodes.Ldsfld, a.operand), new CodeInstruction(OpCodes.Ldfld, doneField) };
+                storeFlagPrefix = new[] { new CodeInstruction(OpCodes.Ldsfld, a.operand) };
+                storeFlag = new[] { new CodeInstruction(OpCodes.Stfld, doneField) };
+                afterSet = 9;
+            }
+            else
+            {
+                return false;
+            }
 
             // The instruction after the flag store is the target of the bne.un above, so it carries labels:
-            // move them onto our first inserted instruction so the "not E/Escape" path also runs our check.
-            matcher.Advance(8);
-            var first = new CodeInstruction(loadKey.opcode, loadKey.operand);
-            first.MoveLabelsFrom(matcher.Instruction);
-            matcher.Insert(
-                first,
-                new CodeInstruction(OpCodes.Ldloc_S, targetLocal),
-                loadFlag,
-                new CodeInstruction(OpCodes.Call, LookExtender_CheckKeyPress),
-                new CodeInstruction(storeFlag.opcode, storeFlag.operand));
+            // move them onto our first inserted instruction so the "not NumPad5/Escape" path also runs our check.
+            matcher.Advance(afterSet);
+            var injected = new List<CodeInstruction>();
+            injected.AddRange(storeFlagPrefix);
+            injected.Add(new CodeInstruction(loadKey.opcode, loadKey.operand));
+            injected.Add(new CodeInstruction(OpCodes.Ldloc_S, targetLocal));
+            injected.AddRange(loadFlag);
+            injected.Add(new CodeInstruction(OpCodes.Call, LookExtender_CheckKeyPress));
+            injected.AddRange(storeFlag);
+            injected[0].MoveLabelsFrom(matcher.Instruction);
+            matcher.Insert(injected);
 
             source.Clear();
             source.AddRange(matcher.InstructionEnumeration());
             return true;
+        }
+
+        private static CodeInstruction LoadLocalFor(CodeInstruction store)
+        {
+            if (store.opcode == OpCodes.Stloc_0) return new CodeInstruction(OpCodes.Ldloc_0);
+            if (store.opcode == OpCodes.Stloc_1) return new CodeInstruction(OpCodes.Ldloc_1);
+            if (store.opcode == OpCodes.Stloc_2) return new CodeInstruction(OpCodes.Ldloc_2);
+            if (store.opcode == OpCodes.Stloc_3) return new CodeInstruction(OpCodes.Ldloc_3);
+            return new CodeInstruction(OpCodes.Ldloc_S, store.operand);
         }
     }
 }
